@@ -7,3 +7,4 @@ Saved/*
 
 *.vsconfig
 *.sln
+*ProjectBS.uproject.DotSettings.user
