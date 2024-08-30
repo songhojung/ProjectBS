@@ -13,24 +13,33 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
 
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStaticMeshActor::StaticClass(), FoundActors);
-	for (AActor* Actor : FoundActors)
+	if(TargetActor == nullptr)
 	{
-		if (Actor->GetActorLabel() == TEXT("SM_ChamferCube2"))
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStaticMeshActor::StaticClass(), FoundActors);
+		for (AActor* Actor : FoundActors)
 		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,Actor);
+			if (Actor->GetActorLabel() == TEXT("SM_ChamferCube2"))
+			{
+				TargetActor = Actor;
+			
 
-			UE_LOG(LogTemp, Warning, TEXT("@@@@Find Target : %s"), *Actor->GetName());
+				UE_LOG(LogTemp, Warning, TEXT("@@@@Find Target : %s"), *Actor->GetName());
+			}
 		}
 	}
 	
-		
+	APawn* ownerPawn =  OwnerComp.GetAIOwner()->GetPawn();
+
+	float distance = ownerPawn->GetDistanceTo(TargetActor);
+
+	if(distance > 200.f)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,TargetActor);
+	}
+	else
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,nullptr);
+	}	
 	
-	// if(target != nullptr)
-	// {
-	// 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,target);
-	//
-	// 	UE_LOG(LogTemp, Warning, TEXT("@@@@Find Target : %s"), *target->GetName());
-	// }
 }

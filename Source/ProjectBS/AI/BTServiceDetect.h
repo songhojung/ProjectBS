@@ -14,4 +14,7 @@ class PROJECTBS_API UBTServiceDetect : public UBTService
 {
 	GENERATED_BODY()
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+protected:
+	AActor* TargetActor;
 };
