@@ -31,15 +31,18 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	
 	APawn* ownerPawn =  OwnerComp.GetAIOwner()->GetPawn();
 
-	float distance = ownerPawn->GetDistanceTo(TargetActor);
+	if(ownerPawn!=nullptr)
+	{
+		float distance = ownerPawn->GetDistanceTo(TargetActor);
 
-	if(distance > 200.f)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,TargetActor);
+		if(distance > 200.f)
+		{
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,TargetActor);
+		}
+		else
+		{
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,nullptr);
+		}
 	}
-	else
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,nullptr);
-	}	
 	
 }
