@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/SoldierCharacterAIInterface.h"
 #include "SoldierBaseCharacter.generated.h"
 
 UCLASS()
-class PROJECTBS_API ASoldierBaseCharacter : public ACharacter
+class PROJECTBS_API ASoldierBaseCharacter : public ACharacter ,public ISoldierCharacterAIInterface
 {
 	GENERATED_BODY()
 
@@ -19,6 +20,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+	//AttackSection
+public:
+	virtual void Attack() override;
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Animation)
+	TObjectPtr<class UAnimMontage> AttackMontage;
+
+	
 public:	
 
 	
