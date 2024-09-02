@@ -3,6 +3,7 @@
 #include "ProjectBSGameMode.h"
 #include "ProjectBSPlayerController.h"
 #include "ProjectBSCharacter.h"
+#include "GameMode/GameViewPawn.h"
 #include "UObject/ConstructorHelpers.h"
 
 AProjectBSGameMode::AProjectBSGameMode()
@@ -11,7 +12,7 @@ AProjectBSGameMode::AProjectBSGameMode()
 	PlayerControllerClass = AProjectBSPlayerController::StaticClass();
 
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownCharacter"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Script/Engine.Blueprint'/Game/ProjectBS/Blueprints/BP_GameView.BP_GameView_C'"));
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
