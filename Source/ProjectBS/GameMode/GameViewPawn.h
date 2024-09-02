@@ -18,8 +18,24 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-public:	
+	
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Camera")
+	TObjectPtr<class USpringArmComponent> CamSpringArm;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Camera")
+	TObjectPtr<class UCameraComponent> MainCamemra;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
+	TObjectPtr<class UInputAction> InputActionCameraZoom;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
+	TObjectPtr<class UInputMappingContext> MappingContext;
+
+protected:
+	UFUNCTION()
+	void CameraZoom(const FInputActionValue& Value);
 
 
 };
