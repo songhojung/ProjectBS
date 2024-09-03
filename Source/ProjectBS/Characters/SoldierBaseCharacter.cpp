@@ -4,6 +4,7 @@
 #include "Characters/SoldierBaseCharacter.h"
 
 #include "AI/SoldierAIController.h"
+#include "CharacterProperty/TeamComponent.h"
 
 // Sets default values
 ASoldierBaseCharacter::ASoldierBaseCharacter()
@@ -17,14 +18,36 @@ ASoldierBaseCharacter::ASoldierBaseCharacter()
 	{
 		AttackMontage = AttackMontageRef.Object;
 	}
+
+
+	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("SoldierTeamComponent"));
 }
 
 // Called when the game starts or when spawned
 void ASoldierBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	MeshComponent = GetMesh();
+
+
+
+}
+
+
+
+void ASoldierBaseCharacter::SetTeam(ETeamType Team)
+{
+	if(TeamComponent == nullptr)
+		return;;
+
+	TeamComponent->SetTeamType(Team);
+	TeamComponent->SetTeamDynamicMaterialInstanceOverride(GetMesh(),Team);
 	
 }
+
+
 
 void ASoldierBaseCharacter::Attack()
 {
