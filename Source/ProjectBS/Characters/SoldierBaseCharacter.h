@@ -19,8 +19,6 @@ public:
 	// Sets default values for this character's properties
 	ASoldierBaseCharacter();
 
-public:
-	FORCEINLINE UTeamComponent* GetTeamComponent() const { return TeamComponent; }
 	
 protected:
 	// Called when the game starts or when spawned
@@ -29,6 +27,7 @@ protected:
 	//teamSection
 	public:
 	void SetTeam(ETeamType Team);
+	virtual ETeamType GetTeam() const override;
 
 
 	//AttackSection

@@ -17,4 +17,7 @@ class PROJECTBS_API UBTServiceDetect : public UBTService
 
 protected:
 	AActor* TargetActor;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Dectect")
+	float DectectDistance = 200.f;
 };

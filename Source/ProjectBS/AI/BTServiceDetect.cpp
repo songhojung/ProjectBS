@@ -5,37 +5,50 @@
 
 #include "SoldierAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Engine/StaticMeshActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Spawn/SpawnArea.h"
 
 void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
+	APawn* ownerPawn =  OwnerComp.GetAIOwner()->GetPawn();
+
+	if(ownerPawn==nullptr)
+		return;
+
+	ISoldierCharacterAIInterface* aiCharacter = Cast<ISoldierCharacterAIInterface>(ownerPawn);
+	if(aiCharacter == nullptr)
+		return;
+
+	ETeamType ownerTeam = aiCharacter->GetTeam();
+	
 
 	if(TargetActor == nullptr)
 	{
 		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStaticMeshActor::StaticClass(), FoundActors);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), FoundActors);
 		for (AActor* Actor : FoundActors)
 		{
-			if (Actor->GetActorLabel() == TEXT("SM_ChamferCube2"))
+			ASpawnArea* SpawnArea = Cast<ASpawnArea>(Actor);
+			if(SpawnArea!= nullptr && SpawnArea->GetTeamType() == ownerTeam)
 			{
 				TargetActor = Actor;
-			
 
-				UE_LOG(LogTemp, Warning, TEXT("@@@@Find Target : %s"), *Actor->GetName());
+				FString ownerTeamStr = StaticEnum<ETeamType>()->GetValueAsString(ownerTeam);
+				UE_LOG(LogTemp, Warning, TEXT("@@@@Find Owen Spawn : %s / %s"), *Actor->GetName(), *ownerTeamStr);
+
 			}
+			
 		}
 	}
 	
-	APawn* ownerPawn =  OwnerComp.GetAIOwner()->GetPawn();
 
 	if(ownerPawn!=nullptr)
 	{
 		float distance = ownerPawn->GetDistanceTo(TargetActor);
 
-		if(distance > 200.f)
+		if(distance < DectectDistance)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,TargetActor);
 		}

@@ -37,6 +37,7 @@ void ASoldierBaseCharacter::BeginPlay()
 
 
 
+
 void ASoldierBaseCharacter::SetTeam(ETeamType Team)
 {
 	if(TeamComponent == nullptr)
@@ -47,6 +48,10 @@ void ASoldierBaseCharacter::SetTeam(ETeamType Team)
 	
 }
 
+ETeamType ASoldierBaseCharacter::GetTeam() const
+{
+	return TeamComponent->GetTeamType();
+}
 
 
 void ASoldierBaseCharacter::Attack()

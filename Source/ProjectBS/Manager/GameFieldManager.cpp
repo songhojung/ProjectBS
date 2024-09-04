@@ -6,6 +6,7 @@
 #include "CharacterProperty/TeamComponent.h"
 #include "Characters/SoldierBaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Spawn/SpawnArea.h"
 
 UGameFieldManager::UGameFieldManager()
 {
@@ -35,36 +36,25 @@ void UGameFieldManager::OnWorldBeginPlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("@@@@OnWorldBeginPlay"));
 
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(),TEXT("OwnTeamSpawnPos"),Actors);
-	if(Actors.Num() > 0)
+	TArray<AActor*> actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), actors);
+
+	for (AActor* actor : actors)
 	{
-		AActor* OwnTeamSpawnPos = Actors[0];
-
-		UE_LOG(LogTemp, Warning, TEXT("@@@@OwnTeamSpawnPos Actors.Num() > 0"));
-
-		// FActorSpawnParameters SpawnParams;
-		for (int i = 0 ; i < 5; i++)
+		ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
+		if(SpawnArea!= nullptr)
 		{
-			ASoldierBaseCharacter* soldier = GetWorld()->SpawnActor<ASoldierBaseCharacter>(SoldierClass, OwnTeamSpawnPos->GetActorLocation(), OwnTeamSpawnPos->GetActorRotation());
-			soldier->SetTeam(ETeamType::OwnTeam);
+			for (int i = 0 ; i < 5; i++)
+			{
+				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActor<ASoldierBaseCharacter>(SoldierClass, SpawnArea->GetActorLocation(), SpawnArea->GetActorRotation());
+				soldier->SetTeam(SpawnArea->GetTeamType());
+			}
+
+			FString teamStr = StaticEnum<ETeamType>()->GetValueAsString(SpawnArea->GetTeamType());
+			UE_LOG(LogTemp, Warning, TEXT("@@@@TeamSpawn Completed : %s"), *teamStr );
+
 		}
+			
 	}
-
-
-	TArray<AActor*> Actors2;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(),TEXT("EnemyTeamSpawn"),Actors2);
-	if(Actors2.Num() > 0)
-	{
-		AActor* enemyTeamSpawnPos = Actors2[0];
-
-		UE_LOG(LogTemp, Warning, TEXT("@@@@EnemyTeamSpawn Actors.Num() > 0"));
-
-		// FActorSpawnParameters SpawnParams;
-		for (int i = 0 ; i < 5; i++)
-		{
-			ASoldierBaseCharacter* soldier = GetWorld()->SpawnActor<ASoldierBaseCharacter>(SoldierClass, enemyTeamSpawnPos->GetActorLocation(), enemyTeamSpawnPos->GetActorRotation());
-			soldier->SetTeam(ETeamType::EnemyTeam);
-		}
-	}
+	
 }
