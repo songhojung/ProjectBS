@@ -19,15 +19,19 @@ ASoldierAIController::ASoldierAIController()
 	{
 		BTAsset = BTAssetRef.Object;
 	}
+
+	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("AIBlackboardComponent"));
 }
 
 void ASoldierAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UBlackboardComponent* BlackboardComponent = Blackboard.Get();
-	if(UseBlackboard(BBAsset,BlackboardComponent))
+	if(BBAsset && BTAsset)
 	{
-		RunBehaviorTree(BTAsset);
+		if(UseBlackboard(BBAsset,BlackboardComponent))
+		{
+			RunBehaviorTree(BTAsset);
+		}
 	}
 }

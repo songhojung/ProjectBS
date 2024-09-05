@@ -7,6 +7,7 @@
 #include "SoldierAIController.generated.h"
 
 #define BBKEY_TARGET TEXT("Target")
+#define BBKEY_ENEMYSPAWN_LOCATION TEXT("EnemySpawnLocation")
 
 /**
  * 
@@ -27,5 +28,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UBehaviorTree> BTAsset;
-	
+
+	UPROPERTY()
+	UBlackboardComponent* BlackboardComponent;
 };

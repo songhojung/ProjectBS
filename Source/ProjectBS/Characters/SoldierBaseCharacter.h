@@ -28,6 +28,7 @@ protected:
 	public:
 	void SetTeam(ETeamType Team);
 	virtual ETeamType GetTeam() const override;
+	virtual float GetAIDectectRange() override;
 
 
 	//AttackSection
@@ -42,6 +43,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Team)
 	TObjectPtr<class UTeamComponent> TeamComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Team)
+	TObjectPtr<class USoldierStatComponent> StatComponent;
 		
 
 	

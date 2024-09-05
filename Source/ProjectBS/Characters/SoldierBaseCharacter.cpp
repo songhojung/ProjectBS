@@ -4,6 +4,7 @@
 #include "Characters/SoldierBaseCharacter.h"
 
 #include "AI/SoldierAIController.h"
+#include "CharacterProperty/SoldierStatComponent.h"
 #include "CharacterProperty/TeamComponent.h"
 
 // Sets default values
@@ -21,6 +22,8 @@ ASoldierBaseCharacter::ASoldierBaseCharacter()
 
 
 	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("SoldierTeamComponent"));
+
+	StatComponent = CreateDefaultSubobject<USoldierStatComponent>(TEXT("SoldierStatsComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +54,11 @@ void ASoldierBaseCharacter::SetTeam(ETeamType Team)
 ETeamType ASoldierBaseCharacter::GetTeam() const
 {
 	return TeamComponent->GetTeamType();
+}
+
+float ASoldierBaseCharacter::GetAIDectectRange()
+{
+	return StatComponent->GetDetectRange();
 }
 
 

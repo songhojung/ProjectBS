@@ -25,5 +25,10 @@ class PROJECTBS_API ISoldierCharacterAIInterface
 public:
 	virtual ETeamType GetTeam() const = 0;
 	
+	// virtual float GetAIPatrolRadius() = 0;
+	virtual float GetAIDectectRange() = 0;
+	// virtual float GetAIAttackRange() = 0;
+	// virtual float GetAITurnSpeed() = 0;
+	
 	virtual void Attack() = 0;
 };
