@@ -3,6 +3,9 @@
 
 #include "CharacterProperty/TeamComponent.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Spawn/SpawnArea.h"
+
 // Sets default values for this component's properties
 UTeamComponent::UTeamComponent()
 {
@@ -23,8 +26,22 @@ void UTeamComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), FoundActors);
+	for (AActor* Actor : FoundActors)
+	{
+		ASpawnArea* SpawnArea = Cast<ASpawnArea>(Actor);
+		if(SpawnArea!= nullptr && SpawnArea->GetTeamType() != TeamType)
+		{
+			OtherTeamBaseActor = Actor;
+
+			
+			FString otherTeamStr = StaticEnum<ETeamType>()->GetValueAsString(SpawnArea->GetTeamType());
+			UE_LOG(LogTemp, Warning, TEXT("@@@@Find Enemy Team Spawn : %s / %s / %s"), *GetName(), *Actor->GetName(), *otherTeamStr);
+		}
+			
+	}
 }
 
 void UTeamComponent::SetTeamDynamicMaterialInstanceOverride(USkeletalMeshComponent* mesh,ETeamType teamType)

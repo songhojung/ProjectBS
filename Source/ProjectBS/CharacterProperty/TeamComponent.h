@@ -28,9 +28,12 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	public:
+public:
 	FORCEINLINE void SetTeamType(ETeamType teamType) { TeamType = teamType; }
 	FORCEINLINE ETeamType GetTeamType() const { return TeamType; }
+
+public:
+	FORCEINLINE AActor& GetOtherTeamBaseActor() {return *OtherTeamBaseActor; }
 
 protected:	
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = TeamType)
@@ -38,7 +41,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = TeamMaterial)
 	TArray<TObjectPtr<class UMaterialInstance>> TeamMaterials;
-
+	
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<AActor> OtherTeamBaseActor;
 
 public:
 	void SetTeamDynamicMaterialInstanceOverride(USkeletalMeshComponent* mesh, ETeamType teamType);

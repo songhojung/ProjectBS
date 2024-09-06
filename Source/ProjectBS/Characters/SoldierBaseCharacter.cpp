@@ -56,6 +56,11 @@ ETeamType ASoldierBaseCharacter::GetTeam() const
 	return TeamComponent->GetTeamType();
 }
 
+AActor& ASoldierBaseCharacter::GetOtherTeamBaseActor() const
+{
+	return  TeamComponent->GetOtherTeamBaseActor();
+}
+
 float ASoldierBaseCharacter::GetAIDectectRange()
 {
 	return StatComponent->GetDetectRange();

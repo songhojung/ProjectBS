@@ -46,8 +46,10 @@ void UGameFieldManager::OnWorldBeginPlay()
 		{
 			for (int i = 0 ; i < 5; i++)
 			{
-				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActor<ASoldierBaseCharacter>(SoldierClass, SpawnArea->GetActorLocation(), SpawnArea->GetActorRotation());
+				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
 				soldier->SetTeam(SpawnArea->GetTeamType());
+
+				UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
 			}
 
 			FString teamStr = StaticEnum<ETeamType>()->GetValueAsString(SpawnArea->GetTeamType());

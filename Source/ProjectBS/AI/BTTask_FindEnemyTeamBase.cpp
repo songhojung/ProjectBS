@@ -12,7 +12,6 @@
 
 EBTNodeResult::Type UBTTask_FindEnemyTeamBase::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-
 	APawn* ownerPawn =  OwnerComp.GetAIOwner()->GetPawn();
 
 	if(ownerPawn==nullptr)
@@ -27,39 +26,17 @@ EBTNodeResult::Type UBTTask_FindEnemyTeamBase::ExecuteTask(UBehaviorTreeComponen
 		return EBTNodeResult::Failed;
 	
 	
-	ETeamType ownerTeam = aiCharacter->GetTeam();
+	// ETeamType ownerTeam = aiCharacter->GetTeam();
 
-	
-	if(EnemyTeamBaseActor == nullptr)
+	AActor& otherTeamBaseActor = aiCharacter->GetOtherTeamBaseActor();
+
+	FNavLocation FindEnemyTeamBaseLocation;
+	// 적팀 베이스 근처 위치 찾아 블랙보드에 저장한다.
+	if(navSystem->GetRandomPointInNavigableRadius(otherTeamBaseActor.GetActorLocation(),300.f,FindEnemyTeamBaseLocation))
 	{
-		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), FoundActors);
-		for (AActor* Actor : FoundActors)
-		{
-			ASpawnArea* SpawnArea = Cast<ASpawnArea>(Actor);
-			if(SpawnArea!= nullptr && SpawnArea->GetTeamType() != ownerTeam)
-			{
-				EnemyTeamBaseActor = Actor;
+		OwnerComp.GetBlackboardComponent()->SetValueAsVector(BBKEY_ENEMYSPAWN_LOCATION,FindEnemyTeamBaseLocation);
 
-			
-				FString otherTeamStr = StaticEnum<ETeamType>()->GetValueAsString(SpawnArea->GetTeamType());
-				UE_LOG(LogTemp, Warning, TEXT("@@@@Find Enemy Team Spawn : %s / %s / %s"), *ownerPawn->GetName(), *Actor->GetName(), *otherTeamStr);
-			}
-			
-		}
-	}
-
-	//적팀 베이스 찾았으면
-	if(EnemyTeamBaseActor != nullptr)
-	{
-		FNavLocation FindEnemyTeamBaseLocation;
-		// 적팀 베이스 근처 위치 찾아 블랙보드에 저장한다.
-		if(navSystem->GetRandomPointInNavigableRadius(EnemyTeamBaseActor->GetActorLocation(),300.f,FindEnemyTeamBaseLocation))
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsVector(BBKEY_ENEMYSPAWN_LOCATION,FindEnemyTeamBaseLocation);
-
-			return EBTNodeResult::Succeeded;
-		}
+		return EBTNodeResult::Succeeded;
 	}
 	
 	return EBTNodeResult::Failed;

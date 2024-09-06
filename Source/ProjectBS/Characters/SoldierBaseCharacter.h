@@ -28,6 +28,7 @@ protected:
 	public:
 	void SetTeam(ETeamType Team);
 	virtual ETeamType GetTeam() const override;
+	virtual AActor& GetOtherTeamBaseActor() const override;
 	virtual float GetAIDectectRange() override;
 
 
