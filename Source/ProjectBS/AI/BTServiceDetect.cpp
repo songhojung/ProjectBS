@@ -25,7 +25,9 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	ETeamType ownerTeam = aiCharacter->GetTeam();
 	float detectRange = aiCharacter->GetAIDectectRange();
 
-	// if(EnemyActor == nullptr)
+	AActor* curTargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(BBKEY_TARGET)) ;
+
+	if(curTargetActor == nullptr)
 	{
 		UWorld* world = ownerPawn->GetWorld();
 		
@@ -55,7 +57,8 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 			CollisionShape,            // 콜리전 모양 (구)
 			QueryParams                // 쿼리 파라미터
 		);
-		
+
+		AActor* targetActor = nullptr;
 		if(bHasOverlaps)
 		{
 			for (auto const& overlapResult : OverlapResults)
@@ -66,30 +69,17 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 				if(soliderPawn != nullptr && soliderPawn->GetTeam() != ownerTeam)
 				{
-					
+
+					targetActor = overLapActor;
 					DrawDebugSphere(world, center, detectRange, 16, FColor::Red, false, 0.2f);
+					break;
 
 				}
 			}
 		}
 
 		DrawDebugSphere(world, center, detectRange, 16, FColor::Green, false, 0.2f);
-	}
-	
-	
 
-	if(ownerPawn!=nullptr)
-	{
-		float distance = ownerPawn->GetDistanceTo(TargetActor);
-
-		if(distance < DectectDistance)
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,TargetActor);
-		}
-		else
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,nullptr);
-		}
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,targetActor);
 	}
-	
 }
