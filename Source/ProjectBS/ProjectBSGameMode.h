@@ -13,6 +13,18 @@ class AProjectBSGameMode : public AGameModeBase
 
 public:
 	AProjectBSGameMode();
+
+protected:
+
+	virtual void BeginPlay() override;
+// protected:
+// 	TSubclassOf<UUserWidget> StartingGameUserWidgetClass;
+//
+// 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game Widget")
+// 	TObjectPtr<UUserWidget> CurrentUserWidget;
+// 	
+// public:
+// 	void ChangeUserWidget(TSubclassOf<UUserWidget> newUserWidet);
 };
 
 

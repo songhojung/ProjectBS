@@ -15,14 +15,21 @@ class PROJECTBS_API UGameFieldManager : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 	UGameFieldManager();
-	public:
+public:
+	// Static function to simplify access to the subsystem (Singleton style)
+	static UGameFieldManager* Get(UObject* WorldContextObject);
+	
+public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	
-	protected:
+protected:
 	UClass* SoldierClass = nullptr;
 
 
-	protected:
+protected:
 	void OnWorldBeginPlay();
+
+public:
+	void StartBattleInField(int32 forceCount);
+	
 };

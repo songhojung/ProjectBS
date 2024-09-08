@@ -19,6 +19,15 @@ UGameFieldManager::UGameFieldManager()
 	}
 }
 
+UGameFieldManager* UGameFieldManager::Get(UObject* WorldContextObject)
+{
+	if (const UGameInstance* GameInstance = WorldContextObject->GetWorld()->GetGameInstance())
+	{
+		return GameInstance->GetSubsystem<UGameFieldManager>();
+	}
+	return nullptr;
+}
+
 void UGameFieldManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -32,9 +41,42 @@ void UGameFieldManager::Initialize(FSubsystemCollectionBase& Collection)
 	
 }
 
+
+
 void UGameFieldManager::OnWorldBeginPlay()
 {
-	UE_LOG(LogTemp, Warning, TEXT("@@@@OnWorldBeginPlay"));
+	// UE_LOG(LogTemp, Warning, TEXT("@@@@OnWorldBeginPlay"));
+	//
+	// TArray<AActor*> actors;
+	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), actors);
+	//
+	// for (AActor* actor : actors)
+	// {
+	// 	ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
+	// 	if(SpawnArea!= nullptr)
+	// 	{
+	// 		for (int i = 0 ; i < 5; i++)
+	// 		{
+	// 			ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
+	// 			soldier->SetTeam(SpawnArea->GetTeamType());
+	// 			soldier->SetStat(100.f,50.f);
+	//
+	// 			UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
+	// 		}
+	//
+	// 		FString teamStr = StaticEnum<ETeamType>()->GetValueAsString(SpawnArea->GetTeamType());
+	// 		UE_LOG(LogTemp, Warning, TEXT("@@@@TeamSpawn Completed : %s"), *teamStr );
+	//
+	// 	}
+	// 		
+	// }
+	
+}
+
+void UGameFieldManager::StartBattleInField(int32 forceCount)
+{
+
+	UE_LOG(LogTemp, Warning, TEXT("@@@@StartBattleInField"));
 
 	TArray<AActor*> actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), actors);
@@ -44,7 +86,7 @@ void UGameFieldManager::OnWorldBeginPlay()
 		ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
 		if(SpawnArea!= nullptr)
 		{
-			for (int i = 0 ; i < 5; i++)
+			for (int i = 0 ; i < forceCount; i++)
 			{
 				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
 				soldier->SetTeam(SpawnArea->GetTeamType());
@@ -59,5 +101,4 @@ void UGameFieldManager::OnWorldBeginPlay()
 		}
 			
 	}
-	
 }

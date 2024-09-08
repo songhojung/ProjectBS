@@ -4,6 +4,7 @@
 #include "ProjectBSPlayerController.h"
 #include "ProjectBSCharacter.h"
 #include "GameMode/GameViewPawn.h"
+#include "Manager/UIManager.h"
 #include "UObject/ConstructorHelpers.h"
 
 AProjectBSGameMode::AProjectBSGameMode()
@@ -19,9 +20,26 @@ AProjectBSGameMode::AProjectBSGameMode()
 	}
 
 	// set default controller to our Blueprinted controller
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownPlayerController"));
+	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("/Script/Engine.Blueprint'/Game/ProjectBS/Blueprints/BP_BSPlayerController.BP_BSPlayerController'"));
 	if(PlayerControllerBPClass.Class != NULL)
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
 }
+
+void AProjectBSGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+
+	if(playerController)
+		UUIManager::Get()->AddUI(TEXT("TitleUI"),playerController);
+
+	
+}
+
+
+// void AProjectBSGameMode::ChangeUserWidget(TSubclassOf<UUserWidget> newUserWidet)
+// {
+// }
