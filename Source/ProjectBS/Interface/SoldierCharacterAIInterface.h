@@ -24,8 +24,9 @@ class PROJECTBS_API ISoldierCharacterAIInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual ETeamType GetTeam() const = 0;
-	virtual AActor& GetOtherTeamBaseActor() const = 0;
+	virtual AActor& GetOtherTeamBaseActor() const = 0;		//상대팀 진영 액터
 
+	virtual  bool IsDead() = 0;
 	// virtual float GetAIPatrolRadius() = 0;
 	virtual float GetAIDectectRange() = 0;
 	// virtual float GetAIAttackRange() = 0;

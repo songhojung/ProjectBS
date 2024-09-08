@@ -8,6 +8,7 @@
 #include "CharacterProperty/TeamComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ASoldierBaseCharacter::ASoldierBaseCharacter()
@@ -22,6 +23,11 @@ ASoldierBaseCharacter::ASoldierBaseCharacter()
 		AttackMontage = AttackMontageRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT("Script/Engine.AnimMontage'/Game/ProjectBS/Animation/AM_Dead.AM_Dead'"));
+	if(DeadMontageRef.Object)
+	{
+		DeadMontage = DeadMontageRef.Object;
+	}
 
 	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("SoldierTeamComponent"));
 
@@ -36,7 +42,9 @@ void ASoldierBaseCharacter::BeginPlay()
 
 	MeshComponent = GetMesh();
 
+	StatComponent->FOnDeadEvent.BindUObject(this, &ASoldierBaseCharacter::SetDead);
 
+	bIsDead = false;
 
 }
 
@@ -74,6 +82,11 @@ AActor& ASoldierBaseCharacter::GetOtherTeamBaseActor() const
 float ASoldierBaseCharacter::GetAIDectectRange()
 {
 	return StatComponent->GetDetectRange();
+}
+
+bool ASoldierBaseCharacter::IsDead()
+{
+	return bIsDead;
 }
 
 
@@ -126,6 +139,36 @@ float ASoldierBaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent 
 	StatComponent->ApplyDamage(DamageAmount);
 
 	return DamageAmount;
+}
+
+void ASoldierBaseCharacter::SetDead()
+{
+	UE_LOG(LogTemp, Warning, TEXT("$$$$$ 111 Dead Sodlier : %s"), *GetName() );
+
+	bIsDead = true;
+
+	//움직임 없음처리
+GetCharacterMovement()->SetMovementMode(MOVE_None);
+	
+	//죽는 에니메이션
+	UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
+	if(animInstance != nullptr)
+	{
+		//모든 몽타주 중지
+		animInstance->StopAllMontages(0.0f);
+		animInstance->Montage_Play(DeadMontage,1.0f);
+	}
+
+	// AIController에서 AI 중지
+	ASoldierAIController* AIController = Cast<ASoldierAIController>(GetController());
+	if(AIController)
+		AIController->StopAI();
+
+	//액터 충돌체 비활성
+	SetActorEnableCollision(false);
+
+	UE_LOG(LogTemp, Warning, TEXT("$$$$$ 222 Dead Sodlier : %s"), *GetName() );
+
 }
 
 

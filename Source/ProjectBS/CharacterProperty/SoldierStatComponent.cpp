@@ -29,12 +29,11 @@ void USoldierStatComponent::ApplyDamage(float Damage)
 {
 	CurrentHp -= Damage;
 
-	if(CurrentHp <= KINDA_SMALL_NUMBER) 
+	if(CurrentHp <= KINDA_SMALL_NUMBER)
 	{
 		//dead 처리
 		//dead 콜백호출
-		UE_LOG(LogTemp, Warning, TEXT("Dead Sodlier : %s"), *GetOwner()->GetName() );
-
+		FOnDeadEvent.ExecuteIfBound();
 	}
 }
 

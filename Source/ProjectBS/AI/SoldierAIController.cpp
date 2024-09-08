@@ -35,3 +35,14 @@ void ASoldierAIController::BeginPlay()
 		}
 	}
 }
+
+void ASoldierAIController::StopAI()
+{
+	UBehaviorTreeComponent* BTComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if(BTComponent)
+	{
+		// BrainComponent->Cleanup();
+		BTComponent->StopTree();
+	}
+}
+

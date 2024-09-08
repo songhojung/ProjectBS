@@ -33,19 +33,26 @@ protected:
 	virtual AActor& GetOtherTeamBaseActor() const override;
 	virtual float GetAIDectectRange() override;
 
-
+	virtual  bool IsDead() override;
 	//AttackSection
 public:
 	virtual void Attack() override;
 
-	void virtual AttackHitCheck();
+	void virtual AttackHitCheck() override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+
+	void SetDead();
+	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	TObjectPtr<class USkeletalMeshComponent> MeshComponent;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Animation)
 	TObjectPtr<class UAnimMontage> AttackMontage;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Animation)
+	TObjectPtr<class UAnimMontage> DeadMontage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Team)
 	TObjectPtr<class UTeamComponent> TeamComponent;
@@ -54,6 +61,7 @@ protected:
 	TObjectPtr<class USoldierStatComponent> StatComponent;
 		
 
-	
+protected:
+	uint8 bIsDead : 1;
 
 };

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "SoldierStatComponent.generated.h"
 
+DECLARE_DELEGATE (FDynamicDeadDelegate);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTBS_API USoldierStatComponent : public UActorComponent
@@ -27,6 +28,9 @@ public:
 public:
 
 	void ApplyDamage(float Damage);
+
+public:
+	FDynamicDeadDelegate FOnDeadEvent;
 
 protected:
 	//스텟컴포넌트의 속성이 저장이 될때 디스크에 저장이 된다.
