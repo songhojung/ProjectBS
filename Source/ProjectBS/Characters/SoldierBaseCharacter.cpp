@@ -14,7 +14,7 @@ ASoldierBaseCharacter::ASoldierBaseCharacter()
 	AIControllerClass = ASoldierAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Characters/Mannequins/Animations/AM_Attack.AM_Attack'"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/ProjectBS/Animation/AM_Attack.AM_Attack'"));
 	if(AttackMontageRef.Object)
 	{
 		AttackMontage = AttackMontageRef.Object;
