@@ -46,7 +46,7 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		QueryParams.AddIgnoredActor(ownerPawn);  // 자신의 액터는 무시
 		
 		// 콜리전 채널 설정 (예: ECC_Pawn)
-		ECollisionChannel CollisionChannel = ECC_Pawn;
+		ECollisionChannel CollisionChannel = ECC_GameTraceChannel1; //SoldierPawn 채널
 		
 		// OverlapMultiByChannel 호출
 		bool bHasOverlaps = world->OverlapMultiByChannel(
@@ -59,6 +59,7 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		);
 
 		AActor* targetActor = nullptr;
+		float nearestDistance = 0.f;
 		if(bHasOverlaps)
 		{
 			for (auto const& overlapResult : OverlapResults)
@@ -70,10 +71,13 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 				if(soliderPawn != nullptr && soliderPawn->GetTeam() != ownerTeam)
 				{
 
-					targetActor = overLapActor;
-					DrawDebugSphere(world, center, detectRange, 16, FColor::Red, false, 0.2f);
-					break;
-
+					float distance = ownerPawn->GetDistanceTo(overLapActor);
+					//제일 가까운 적으로 타켓으로 삼는다
+					if(nearestDistance <= 0.f ||  nearestDistance > distance)
+					{
+						targetActor = overLapActor;
+						DrawDebugSphere(world, center, detectRange, 16, FColor::Red, false, 0.2f);
+					}
 				}
 			}
 		}

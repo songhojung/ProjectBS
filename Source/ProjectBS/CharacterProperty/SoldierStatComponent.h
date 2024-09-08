@@ -22,5 +22,18 @@ protected:
 
 public:
 	FORCEINLINE float GetDetectRange(){return  700.f;}
-		
+
+
+protected:
+	//스텟컴포넌트의 속성이 저장이 될때 디스크에 저장이 된다.
+	//hp 경우 매 앱을 시작할때마다 초기화가 되어야하니 저장필요 없다. 이떄 Transient 사용함
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
+	float CurrentHp;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
+	float MaxHp;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
+	float AttackValue;
+
 };
