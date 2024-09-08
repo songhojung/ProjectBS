@@ -19,5 +19,24 @@ void USoldierStatComponent::BeginPlay()
 	
 }
 
+void USoldierStatComponent::SetStat(float hp, float attackDamage)
+{
+	CurrentHp = MaxHp = hp;
+	AttackDamage = attackDamage;
+}
+
+void USoldierStatComponent::ApplyDamage(float Damage)
+{
+	CurrentHp -= Damage;
+
+	if(CurrentHp <= KINDA_SMALL_NUMBER) 
+	{
+		//dead 처리
+		//dead 콜백호출
+		UE_LOG(LogTemp, Warning, TEXT("Dead Sodlier : %s"), *GetOwner()->GetName() );
+
+	}
+}
+
 
 

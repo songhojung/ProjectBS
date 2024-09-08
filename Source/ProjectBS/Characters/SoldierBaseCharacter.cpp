@@ -6,6 +6,8 @@
 #include "AI/SoldierAIController.h"
 #include "CharacterProperty/SoldierStatComponent.h"
 #include "CharacterProperty/TeamComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 
 // Sets default values
 ASoldierBaseCharacter::ASoldierBaseCharacter()
@@ -51,6 +53,14 @@ void ASoldierBaseCharacter::SetTeam(ETeamType Team)
 	
 }
 
+void ASoldierBaseCharacter::SetStat(float hp, float attackDamage)
+{
+	if(StatComponent == nullptr)
+		return;
+
+	StatComponent->SetStat(hp,attackDamage);
+}
+
 ETeamType ASoldierBaseCharacter::GetTeam() const
 {
 	return TeamComponent->GetTeamType();
@@ -67,6 +77,7 @@ float ASoldierBaseCharacter::GetAIDectectRange()
 }
 
 
+//공격하기
 void ASoldierBaseCharacter::Attack()
 {
 	UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
@@ -74,6 +85,47 @@ void ASoldierBaseCharacter::Attack()
 	{
 		animInstance->Montage_Play(AttackMontage);
 	}
+}
+
+
+//공격시 히트 체크
+void ASoldierBaseCharacter::AttackHitCheck()
+{
+	FHitResult outHitResult;
+	FCollisionQueryParams params(SCENE_QUERY_STAT(Attack), false, this);
+	float attackRange = 20.f;
+	float attackRadius = 30.f;
+	FVector start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
+	FVector end  =start + GetActorForwardVector() * attackRange;
+	
+	bool hitDetected = GetWorld()->SweepSingleByChannel(outHitResult,start,end,FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel1, FCollisionShape::MakeSphere(attackRadius),params);
+	if(hitDetected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("hitDetected : %s"), *outHitResult.GetActor()->GetName() );
+
+		FDamageEvent damageEvent;
+		outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
+	}
+
+#if ENABLE_DRAW_DEBUG
+	FVector capsuleOrigin = start + (end - start) * 0.5f;
+	float capsuleHalfHeight = attackRange * 0.5f;
+	FColor drawColor = hitDetected ? FColor::Green : FColor::Red;
+
+	DrawDebugCapsule(GetWorld(), capsuleOrigin, capsuleHalfHeight, attackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), drawColor,false, 3.0f);
+
+#endif
+}
+
+
+//데미지 맞을때
+float ASoldierBaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	StatComponent->ApplyDamage(DamageAmount);
+
+	return DamageAmount;
 }
 
 

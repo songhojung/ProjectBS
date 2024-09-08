@@ -21,8 +21,12 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	 void SetStat(float hp, float attackDamage);
 	FORCEINLINE float GetDetectRange(){return  700.f;}
+	FORCEINLINE float GetAttackDamange(){return AttackDamage;}
+public:
 
+	void ApplyDamage(float Damage);
 
 protected:
 	//스텟컴포넌트의 속성이 저장이 될때 디스크에 저장이 된다.
@@ -34,6 +38,6 @@ protected:
 	float MaxHp;
 
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
-	float AttackValue;
+	float AttackDamage;
 
 };

@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/SoldierCharacterAIInterface.h"
+#include "Interface/IAnimantionAttackInterface.h"
 #include "CharacterProperty/TeamComponent.h"
 #include "SoldierBaseCharacter.generated.h"
 
 enum class ETeamType : uint8;
 
 UCLASS()
-class PROJECTBS_API ASoldierBaseCharacter : public ACharacter ,public ISoldierCharacterAIInterface
+class PROJECTBS_API ASoldierBaseCharacter : public ACharacter ,public ISoldierCharacterAIInterface ,public  IIAnimantionAttackInterface
 {
 	GENERATED_BODY()
 
@@ -27,6 +28,7 @@ protected:
 	//teamSection
 	public:
 	void SetTeam(ETeamType Team);
+	void SetStat(float hp, float attackDamage);
 	virtual ETeamType GetTeam() const override;
 	virtual AActor& GetOtherTeamBaseActor() const override;
 	virtual float GetAIDectectRange() override;
@@ -35,7 +37,10 @@ protected:
 	//AttackSection
 public:
 	virtual void Attack() override;
-	
+
+	void virtual AttackHitCheck();
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	TObjectPtr<class USkeletalMeshComponent> MeshComponent;

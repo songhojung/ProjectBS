@@ -44,10 +44,11 @@ void UGameFieldManager::OnWorldBeginPlay()
 		ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
 		if(SpawnArea!= nullptr)
 		{
-			for (int i = 0 ; i < 5; i++)
+			for (int i = 0 ; i < 1; i++)
 			{
 				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
 				soldier->SetTeam(SpawnArea->GetTeamType());
+				soldier->SetStat(100.f,50.f);
 
 				UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
 			}
