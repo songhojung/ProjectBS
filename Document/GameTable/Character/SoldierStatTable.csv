@@ -1,0 +1,4 @@
+﻿Name,MaxHp,AttackDamage,AttackSpeed,MovementSpeed
+HandCombatSoldier1,100,50,10,10
+HandCombatSoldier2,110,40,10,10
+HandCombatSoldier3,100,50,8,20
