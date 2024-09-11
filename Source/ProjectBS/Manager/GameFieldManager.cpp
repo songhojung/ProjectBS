@@ -3,6 +3,7 @@
 
 #include "Manager/GameFieldManager.h"
 
+#include "GameDataManager.h"
 #include "CharacterProperty/TeamComponent.h"
 #include "Characters/SoldierBaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -86,11 +87,12 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
 		if(SpawnArea!= nullptr)
 		{
+			FSoldierStatData statData = UGameDataManager::Get()->GetSoldierStatData(1);
 			for (int i = 0 ; i < forceCount; i++)
 			{
 				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
 				soldier->SetTeam(SpawnArea->GetTeamType());
-				soldier->SetStat(100.f,50.f);
+				soldier->SetStat(statData);
 
 				UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
 			}

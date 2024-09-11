@@ -61,12 +61,12 @@ void ASoldierBaseCharacter::SetTeam(ETeamType Team)
 	
 }
 
-void ASoldierBaseCharacter::SetStat(float hp, float attackDamage)
+void ASoldierBaseCharacter::SetStat(const FSoldierStatData& statData)
 {
 	if(StatComponent == nullptr)
 		return;
 
-	StatComponent->SetStat(hp,attackDamage);
+	StatComponent->SetStat(statData);
 }
 
 ETeamType ASoldierBaseCharacter::GetTeam() const

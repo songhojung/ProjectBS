@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameData/SoldierStatData.h"
 #include "SoldierStatComponent.generated.h"
 
 DECLARE_DELEGATE (FDynamicDeadDelegate);
@@ -22,11 +23,14 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	 void SetStat(float hp, float attackDamage);
+	  void SetStat(const FSoldierStatData& statData);
 	FORCEINLINE float GetDetectRange(){return  700.f;}
-	FORCEINLINE float GetAttackDamange(){return AttackDamage;}
+	FORCEINLINE float GetAttackDamange(){return BaseStatData.AttackDamage;}
+	FORCEINLINE const FSoldierStatData& GetStat(){return BaseStatData;}
 public:
 
+	void SetHp(float newHp);
+	
 	void ApplyDamage(float Damage);
 
 public:
@@ -38,10 +42,7 @@ protected:
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
 	float CurrentHp;
 
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
-	float MaxHp;
-
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
-	float AttackDamage;
+	UPROPERTY()
+	FSoldierStatData BaseStatData;
 
 };
