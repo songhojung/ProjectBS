@@ -90,11 +90,14 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 			FSoldierStatData statData = UGameDataManager::Get()->GetSoldierStatData(1);
 			for (int i = 0 ; i < forceCount; i++)
 			{
-				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
+				int row = i / 10;
+				int column = i % 10;
+				FVector SpawnLocation = SpawnArea->GetActorLocation() + FVector(row * 100, column * 100, 0); 
+				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
 				soldier->SetTeam(SpawnArea->GetTeamType());
 				soldier->SetStat(statData);
 
-				UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnArea->GetActorLocation()));
+				UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
 			}
 
 			FString teamStr = StaticEnum<ETeamType>()->GetValueAsString(SpawnArea->GetTeamType());
