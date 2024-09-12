@@ -3,6 +3,7 @@
 
 #include "SoldierStatComponent.h"
 
+
 // Sets default values for this component's properties
 USoldierStatComponent::USoldierStatComponent()
 {
@@ -19,10 +20,19 @@ void USoldierStatComponent::BeginPlay()
 	
 }
 
-void USoldierStatComponent::SetStat(float hp, float attackDamage)
+void USoldierStatComponent::SetStat(const FSoldierStatData& statData)
 {
-	CurrentHp = MaxHp = hp;
-	AttackDamage = attackDamage;
+	CurrentHp  = statData.MaxHp;
+
+	SetHp(statData.MaxHp);
+	
+	BaseStatData = statData;
+}
+
+void USoldierStatComponent::SetHp(float newHp)
+{
+	CurrentHp = FMath::Clamp(newHp, 0, BaseStatData.MaxHp);
+	
 }
 
 void USoldierStatComponent::ApplyDamage(float Damage)

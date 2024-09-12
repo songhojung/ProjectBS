@@ -1,3 +1,4 @@
+#pragma once
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include  "SoldierStatData.generated.h"
@@ -9,6 +10,9 @@ struct FSoldierStatData : public FTableRowBase
     GENERATED_BODY();
     
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Stat")
+    int Id;
+    
     UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Stat")
     float MaxHp;
     

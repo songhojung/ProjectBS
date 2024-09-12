@@ -7,6 +7,7 @@
 #include "Interface/SoldierCharacterAIInterface.h"
 #include "Interface/IAnimantionAttackInterface.h"
 #include "CharacterProperty/TeamComponent.h"
+#include "GameData/SoldierStatData.h"
 #include "SoldierBaseCharacter.generated.h"
 
 enum class ETeamType : uint8;
@@ -28,7 +29,7 @@ protected:
 	//teamSection
 	public:
 	void SetTeam(ETeamType Team);
-	void SetStat(float hp, float attackDamage);
+	void SetStat(const FSoldierStatData& statData);
 	virtual ETeamType GetTeam() const override;
 	virtual AActor& GetOtherTeamBaseActor() const override;
 	virtual float GetAIDectectRange() override;
