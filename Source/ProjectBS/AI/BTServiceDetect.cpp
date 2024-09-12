@@ -74,19 +74,19 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 				if(nearestDistance <= 0.f ||  nearestDistance > distance)
 				{
 					targetActor = overLapActor;
-					DrawDebugSphere(world, center, detectRange, 16, FColor::Red, false, 0.2f);
+					// DrawDebugSphere(world, center, detectRange, 16, FColor::Red, false, 0.2f);
 				}
 			}
 		}
 	}
 
-	DrawDebugSphere(world, center, detectRange, 16, FColor::Green, false, 0.2f);
+	// DrawDebugSphere(world, center, detectRange, 16, FColor::Green, false, 0.2f);
 
-	if(targetActor == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("**** dect target is null : %s"), *ownerPawn->GetName() );
-
-	}
+	// if(targetActor == nullptr)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("**** dect target is null : %s"), *ownerPawn->GetName() );
+	//
+	// }
 	
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,targetActor);
 }
