@@ -1,0 +1,6 @@
+GameData > datatable(타입)
+정의 해놓은 행구조
+solderstate 등~~
+
+datatable > reimport > .csv선택 ,open
+index 는 id 열사용
