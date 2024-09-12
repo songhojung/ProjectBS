@@ -88,6 +88,7 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		if(SpawnArea!= nullptr)
 		{
 			FSoldierStatData statData = UGameDataManager::Get()->GetSoldierStatData(1);
+			
 			for (int i = 0 ; i < forceCount; i++)
 			{
 				int row = i / 10;

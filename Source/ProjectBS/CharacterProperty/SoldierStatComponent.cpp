@@ -17,14 +17,16 @@ void USoldierStatComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	SetHp(BaseStatData.MaxHp);
+
 	
 }
 
 void USoldierStatComponent::SetStat(const FSoldierStatData& statData)
 {
-	CurrentHp  = statData.MaxHp;
+	// CurrentHp  = statData.MaxHp;
 
-	SetHp(statData.MaxHp);
+	// SetHp(statData.MaxHp);
 	
 	BaseStatData = statData;
 }
