@@ -24,10 +24,6 @@ void USoldierStatComponent::BeginPlay()
 
 void USoldierStatComponent::SetStat(const FSoldierStatData& statData)
 {
-	// CurrentHp  = statData.MaxHp;
-
-	// SetHp(statData.MaxHp);
-	
 	BaseStatData = statData;
 }
 
