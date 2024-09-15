@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PhysicsEngine/PhysicalAnimationComponent.h"
 
 // Sets default values
 ASoldierBaseCharacter::ASoldierBaseCharacter()
@@ -32,6 +33,8 @@ ASoldierBaseCharacter::ASoldierBaseCharacter()
 	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("SoldierTeamComponent"));
 
 	StatComponent = CreateDefaultSubobject<USoldierStatComponent>(TEXT("SoldierStatsComponent"));
+
+	PhysicalAnimation = CreateDefaultSubobject<UPhysicalAnimationComponent>("PhysicalAnimationComponent");
 }
 
 // Called when the game starts or when spawned
@@ -39,12 +42,27 @@ void ASoldierBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	bIsDead = false;
 
 	MeshComponent = GetMesh();
 
 	StatComponent->FOnDeadEvent.BindUObject(this, &ASoldierBaseCharacter::SetDead);
 
-	bIsDead = false;
+	// PhysicalAnimation->SetSkeletalMeshComponent(MeshComponent);
+	//
+	// // FPhysicalAnimationData 초기화
+	// FPhysicalAnimationData PhysicalAnimationData;
+	// PhysicalAnimationData.bIsLocalSimulation = true;       // 로컬 시뮬레이션 사용 여부
+	// PhysicalAnimationData.OrientationStrength = 1000.0f;    // 회전 제어 강도
+	// PhysicalAnimationData.PositionStrength = 1000.0f;       // 위치 제어 강도
+	// PhysicalAnimationData.VelocityStrength = 100.0f;       // 속도 제어 강도
+	// PhysicalAnimationData.AngularVelocityStrength = 100.0f; // 각속도 제어 강도
+	// PhysicalAnimationData.MaxLinearForce = 0.0f;        // 최대 선형 힘
+	// PhysicalAnimationData.MaxAngularForce = 0.0f;       // 최대 각력
+	// PhysicalAnimation->ApplyPhysicalAnimationSettingsBelow( TEXT("Pelvis") ,PhysicalAnimationData);
+	//
+	// MeshComponent->SetAllBodiesBelowSimulatePhysics(TEXT("Pelvis"),true,false);
+	
 
 }
 

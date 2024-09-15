@@ -60,7 +60,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Team)
 	TObjectPtr<class USoldierStatComponent> StatComponent;
-		
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Team)
+	TObjectPtr<class UPhysicalAnimationComponent> PhysicalAnimation;
 
 protected:
 	uint8 bIsDead : 1;
