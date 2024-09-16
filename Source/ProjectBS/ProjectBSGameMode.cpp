@@ -34,7 +34,9 @@ void AProjectBSGameMode::BeginPlay()
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 
 	if(playerController)
-		UUIManager::Get()->AddUI(TEXT("TitleUI"),playerController);
+		// UUIManager::Get()->AddUI(TEXT("TitleUI"),playerController);
+		UUIManager::Get()->AddUI(TEXT("BattleBatchUI"),playerController);
+
 
 	
 }
