@@ -13,5 +13,15 @@ UCLASS()
 class PROJECTBS_API UBatchUnitItemSlot : public UUserWidget
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void  SlotButtonClicked();
+
+protected:
 	
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Button_Slot;
 };
