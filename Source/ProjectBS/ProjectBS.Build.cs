@@ -11,6 +11,6 @@ public class ProjectBS : ModuleRules
 		PublicIncludePaths.AddRange(new string[] { "ProjectBS" });
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore","UMG", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput"});
         
-        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "ProceduralMeshComponent" });
     }
 }
