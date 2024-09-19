@@ -3,9 +3,11 @@
 
 #include "UI/BattleBatchUI.h"
 
+#include "ProjectBSGameMode.h"
 #include "TitleUI.h"
 #include "Components/Button.h"
 #include "Components/UniformGridPanel.h"
+#include "Kismet/GameplayStatics.h"
 #include "Manager/GameFieldManager.h"
 #include "Manager/UIManager.h"
 #include "UI/BatchUnitItemSlot.h"
@@ -37,8 +39,12 @@ void UBattleBatchUI::NativeConstruct()
 void UBattleBatchUI::StartButtonClicked()
 {
 
-	// 게임필드 에 필드에 배틀 시작 처리 관련 함수 호출
-	UGameFieldManager::Get(this)->StartBattleInField(ForceCount);
+
+
+	AProjectBSGameMode* gameMode = Cast<AProjectBSGameMode>(UGameplayStatics::GetGameMode(this));
+	if(gameMode)
+		gameMode->BattleStart(ForceCount);
+	
 
 	UUIManager::Get()->RemoveUI(this);
 }

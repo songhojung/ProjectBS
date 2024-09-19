@@ -31,5 +31,7 @@ protected:
 
 public:
 	void StartBattleInField(int32 forceCount);
+
+	class ABatchGridActor* GetBatchGrid();
 	
 };

@@ -10,12 +10,29 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "BatchGrid/BatchGridActor.h"
 #include "Engine/LocalPlayer.h"
+#include "Manager/GameFieldManager.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AProjectBSPlayerController::AProjectBSPlayerController()
 {
+
+	static  ConstructorHelpers::FObjectFinder<UInputMappingContext> defaultMappingContextRef(TEXT("/Game/TopDown/Input/IMC_Default.IMC_Default"));
+	if (defaultMappingContextRef.Succeeded())
+	{
+		DefaultMappingContext = defaultMappingContextRef.Object;
+	}
+
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> clickInputActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/TopDown/Input/Actions/IA_SetDestination_Click.IA_SetDestination_Click'"));
+	if(clickInputActionRef.Object)
+	{
+		SetDestinationClickAction = clickInputActionRef.Object;
+	}
+	
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
@@ -68,10 +85,8 @@ void AProjectBSPlayerController::OnInputStarted()
 // Triggered every frame when the input is held down
 void AProjectBSPlayerController::OnSetDestinationTriggered()
 {
-	// We flag that the input is being pressed
-	FollowTime += GetWorld()->GetDeltaSeconds();
+
 	
-	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bool bHitSuccessful = false;
 	if (bIsTouch)
@@ -87,15 +102,26 @@ void AProjectBSPlayerController::OnSetDestinationTriggered()
 	if (bHitSuccessful)
 	{
 		CachedDestination = Hit.Location;
+
+		ABatchGridActor* grid =  UGameFieldManager::Get(this)->GetBatchGrid();
+		if(grid!=nullptr)
+		{
+			int32 row;
+			int32 col;
+			grid->LocationToTile(Hit.Location,row,col);
+
+			grid->SetSelectedTile(row,col);
+		}
+	}
+	else
+	{
+		ABatchGridActor* grid =  UGameFieldManager::Get(this)->GetBatchGrid();
+		grid->SetSelectedTile(-1,-1);
+
+
 	}
 	
-	// Move towards mouse pointer or touch
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn != nullptr)
-	{
-		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
-	}
+
 }
 
 void AProjectBSPlayerController::OnSetDestinationReleased()

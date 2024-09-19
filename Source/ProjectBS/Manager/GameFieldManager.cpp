@@ -4,6 +4,7 @@
 #include "Manager/GameFieldManager.h"
 
 #include "GameDataManager.h"
+#include "BatchGrid/BatchGridActor.h"
 #include "CharacterProperty/TeamComponent.h"
 #include "Characters/SoldierBaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -107,4 +108,17 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		}
 			
 	}
+}
+
+class ABatchGridActor* UGameFieldManager::GetBatchGrid()
+{
+	TArray<AActor*> actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABatchGridActor::StaticClass(), actors);
+
+	if(actors.Num()>0)
+	{
+		ABatchGridActor* grid = Cast<ABatchGridActor>(actors[0]);
+		return grid;
+	}
+	return nullptr;
 }
