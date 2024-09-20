@@ -47,9 +47,16 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Grid")
 	float SelectionOpacity;
 
+protected:
+	int32 SoldierCharIdOnGrid; // 그리드에 배치할 병사 id
+	int32 LastSelectionRow;
+	int32 LastSelectionColumn;
+
 public:
 	FORCEINLINE int32 GetNumRows() const { return NumRows; }
 	FORCEINLINE int32 GetNumColumns() const { return NumColumns; }
+
+	FORCEINLINE void SetSoldierIdOnGrid(int32 id) { SoldierCharIdOnGrid = id; } // 그리드에 배치할 병사 id 설정
 
 protected:
 	void CreateLine(FVector start, FVector end, float thickNess, TArray<FVector>& vertices, TArray<int32>& triangles);
@@ -68,5 +75,7 @@ public:
 	bool TileValid(int32 row, int32 column);
 
 	void SetActiveBatchGrid(bool isActive);
+
+	
 
 };

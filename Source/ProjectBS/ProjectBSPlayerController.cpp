@@ -77,6 +77,8 @@ void AProjectBSPlayerController::SetupInputComponent()
 	}
 }
 
+
+
 void AProjectBSPlayerController::OnInputStarted()
 {
 	StopMovement();
@@ -87,6 +89,13 @@ void AProjectBSPlayerController::OnSetDestinationTriggered()
 {
 
 	
+
+	
+
+}
+
+void AProjectBSPlayerController::OnSetDestinationReleased()
+{
 	FHitResult Hit;
 	bool bHitSuccessful = false;
 	if (bIsTouch)
@@ -108,33 +117,17 @@ void AProjectBSPlayerController::OnSetDestinationTriggered()
 		{
 			int32 row;
 			int32 col;
+			FVector2d outGridCenterLocation;
 			grid->LocationToTile(Hit.Location,row,col);
+			grid->TileToGridLocation(row,col,true, outGridCenterLocation);
 
-			grid->SetSelectedTile(row,col);
+			UGameFieldManager::Get(this)->BatchSoldier(1,FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
 		}
 	}
 	else
 	{
-		ABatchGridActor* grid =  UGameFieldManager::Get(this)->GetBatchGrid();
-		grid->SetSelectedTile(-1,-1);
-
 
 	}
-	
-
-}
-
-void AProjectBSPlayerController::OnSetDestinationReleased()
-{
-	// If it was a short press
-	if (FollowTime <= ShortPressThreshold)
-	{
-		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
-	}
-
-	FollowTime = 0.f;
 }
 
 // Triggered every frame when the input is held down
@@ -149,3 +142,6 @@ void AProjectBSPlayerController::OnTouchReleased()
 	bIsTouch = false;
 	OnSetDestinationReleased();
 }
+
+
+

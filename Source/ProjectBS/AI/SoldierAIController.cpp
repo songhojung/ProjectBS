@@ -27,13 +27,7 @@ void ASoldierAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(BBAsset && BTAsset)
-	{
-		if(UseBlackboard(BBAsset,BlackboardComponent))
-		{
-			RunBehaviorTree(BTAsset);
-		}
-	}
+	
 }
 
 void ASoldierAIController::StopAI()
@@ -43,6 +37,17 @@ void ASoldierAIController::StopAI()
 	{
 		// BrainComponent->Cleanup();
 		BTComponent->StopTree();
+	}
+}
+
+void ASoldierAIController::StartAI()
+{
+	if(BBAsset && BTAsset)
+	{
+		if(UseBlackboard(BBAsset,BlackboardComponent))
+		{
+			RunBehaviorTree(BTAsset);
+		}
 	}
 }
 

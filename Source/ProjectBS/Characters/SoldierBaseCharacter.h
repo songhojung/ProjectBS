@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AI/SoldierAIController.h"
 #include "GameFramework/Character.h"
 #include "Interface/SoldierCharacterAIInterface.h"
 #include "Interface/IAnimantionAttackInterface.h"
@@ -27,11 +28,12 @@ protected:
 	virtual void BeginPlay() override;
 
 	//teamSection
-	public:
+public:
 	void SetTeam(ETeamType Team);
 	void SetStat(const FSoldierStatData& statData);
 	virtual ETeamType GetTeam() const override;
 	virtual AActor& GetOtherTeamBaseActor() const override;
+	FORCEINLINE class ASoldierAIController* GetAIController() {return Cast<class ASoldierAIController>(GetController());}
 	virtual float GetAIDectectRange() override;
 
 	virtual  bool IsDead() override;

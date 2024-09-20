@@ -4,13 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Tickable.h"
+#include "Characters/SoldierBaseCharacter.h"
 #include "GameFieldManager.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTBS_API UGameFieldManager : public UGameInstanceSubsystem
+class PROJECTBS_API UGameFieldManager : public UGameInstanceSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -21,16 +23,30 @@ public:
 	
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-
+	virtual void Tick(float DeltaTime) override;
+	virtual bool IsTickable() const override;
+	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UGameFieldManager, STATGROUP_Tickables); }
+	
 protected:
 	UClass* SoldierClass = nullptr;
 
+	bool CanTick = true;
 
+	TWeakObjectPtr<class ABatchGridActor> BatchGrid;
+
+	class ASoldierBaseCharacter* BatchGridSoldier;
+
+	TArray<ASoldierBaseCharacter*> SoldierArray;
+	
 protected:
 	void OnWorldBeginPlay();
+	void TrackMouseOnPlane();
+	ASoldierBaseCharacter* CreateSoldier(int32 soldierId, FVector location, ETeamType teamType);
 
 public:
 	void StartBattleInField(int32 forceCount);
+
+	void BatchSoldier(int32 soldierId, FVector location, ETeamType teamType);
 
 	class ABatchGridActor* GetBatchGrid();
 	

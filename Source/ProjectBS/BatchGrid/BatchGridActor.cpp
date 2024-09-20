@@ -24,7 +24,8 @@ ABatchGridActor::ABatchGridActor()
 	SelectionColor = FColor::Red;
 	SelectionOpacity = 0.25f;
 	
-	
+	LastSelectionRow = -1;
+	LastSelectionColumn = -1;
 	
 	
 	// UMaterialInstanceDynamic* lineMatInstanceDynamic =  CreateMaterialInstance(LineColor,LineOpacity);

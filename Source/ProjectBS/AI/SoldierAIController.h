@@ -32,6 +32,7 @@ protected:
 	UPROPERTY()
 	UBlackboardComponent* BlackboardComponent;
 
-	public:
+public:
 	void StopAI();
+	void StartAI();
 };
