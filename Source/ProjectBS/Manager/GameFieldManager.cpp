@@ -42,7 +42,7 @@ void UGameFieldManager::Initialize(FSubsystemCollectionBase& Collection)
 	// spawnParams.Instigator = GetInstigator();
 	// GetWorld()->OnWorldBeginPlay.AddUObject(this,&UGameFieldManager::OnWorldBeginPlay);
 
-	
+	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	
 }
 
@@ -102,38 +102,59 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 	{
 		soldier->GetAIController()->StartAI();
 	}
+
+	//배치 병사 안보이게
+	if(BatchGridSoldier!=nullptr)
+		BatchGridSoldier->SetActorHiddenInGame(true);
+
+	//TICK 처리 안하게
+	CanTick = false;
 }
 
 void UGameFieldManager::BatchSoldier(int32 soldierId, FVector location, ETeamType teamType)
 {
 	ASoldierBaseCharacter* soldier = CreateSoldier(soldierId, location, teamType);
 
+	//생성된 병사 컨테이너에 ADD
 	SoldierArray.Add(soldier);
+
+	int32 row;
+	int32 col;
+	BatchGrid->LocationToTile(location,row,col);
+	//해당 열, 행에 대한 그리드 인덱스 반환
+	int32 gridIndex = BatchGrid->GetGridIndex(row,col); 
+
+	// 그리드 인덱스 (그리드 칸 하나 마다 0부터 부여된 인덱스) 포함 안되었다면 포함하도록 ADD
+	if(OwnTeamBatchGridAssignedMap.Contains(gridIndex) ==false)
+		OwnTeamBatchGridAssignedMap.Add(gridIndex,true);
 }
 
 ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 soldierId, FVector location, ETeamType teamType)
 {
 	//병사 오브젝트 로드해서 위치시킨다
 	FSoldierStatData statData = UGameDataManager::Get()->GetSoldierStatData(soldierId);
-	FVector SpawnLocation = location;
-	FRotator SpawnRotation = FRotator(0, 0, 0);
-	BatchGridSoldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnRotation, SpawnLocation));
-	BatchGridSoldier->SetTeam(teamType);
-	BatchGridSoldier->SetStat(statData);
+	FVector spawnLocation = location;
+	FRotator spawnRotation = FRotator(0, 0, 0);
+	ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( spawnRotation, spawnLocation));
+	soldier->SetTeam(teamType);
+	soldier->SetStat(statData);
 
-	float height = BatchGridSoldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	SpawnLocation = FVector(location.X, location.Y, height);
-	UGameplayStatics::FinishSpawningActor(BatchGridSoldier,FTransform( SpawnRotation, SpawnLocation));
+	float height = soldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	spawnLocation = FVector(location.X, location.Y, height);
+	UGameplayStatics::FinishSpawningActor(soldier,FTransform( spawnRotation, spawnLocation));
 
-	return BatchGridSoldier;
+	return soldier;
 }
 
 void UGameFieldManager::TrackMouseOnPlane()
 {
-	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	// APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
+	if(PlayerController == nullptr)
+		PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	
 	FHitResult Hit;
-	if(playerController && playerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit))
+	if(PlayerController.IsValid()&& PlayerController.Get()->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit))
 	{
 		ABatchGridActor* grid =  GetBatchGrid();
 
@@ -142,8 +163,16 @@ void UGameFieldManager::TrackMouseOnPlane()
 			int32 row;
 			int32 col;
 			grid->LocationToTile(Hit.Location,row,col);
-		
-			grid->SetSelectedTile(row,col);
+			int32 gridIndex = grid->GetGridIndex(row,col);
+
+			if(LastHoverMouseBatchGridIndex == gridIndex)
+				return;
+
+			LastHoverMouseBatchGridIndex = gridIndex;
+			
+			bool isContainGridIndex = OwnTeamBatchGridAssignedMap.Contains(gridIndex);
+			
+			grid->SetSelectedTile(row,col,!isContainGridIndex);
 
 			FVector2d gridPos;
 			bool isLocate = grid->TileToGridLocation(row,col,true,gridPos);
@@ -155,22 +184,20 @@ void UGameFieldManager::TrackMouseOnPlane()
 				{
 					//병사 오브젝트 로드해서 위치시킨다
 					BatchGridSoldier = CreateSoldier(1,FVector(gridPos.X,gridPos.Y,0.f),ETeamType::OwnTeam);
-					// FSoldierStatData statData = UGameDataManager::Get()->GetSoldierStatData(1);
-					// FVector SpawnLocation = FVector(gridPos.X, gridPos.Y, 0);
-					// FRotator SpawnRotation = FRotator(0, 0, 0);
-					// BatchGridSoldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnRotation, SpawnLocation));
-					// BatchGridSoldier->SetTeam(ETeamType::OwnTeam);
-					// BatchGridSoldier->SetStat(statData);
-					//
-					// float height = BatchGridSoldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-					// SpawnLocation = FVector(gridPos.X, gridPos.Y, height);
-					// UGameplayStatics::FinishSpawningActor(BatchGridSoldier,FTransform( SpawnRotation, SpawnLocation));
+					BatchGridSoldier->SetActorEnableCollision(false);
+
+					UE_LOG(LogTemp, Warning, TEXT("!@!@!@TrackMouseOnPlane CreateSoldier %i / %i"), row, col);
+
 				}
 				else
 				{
 					float height = BatchGridSoldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 					BatchGridSoldier->SetActorHiddenInGame(false);
+					BatchGridSoldier->SetActorEnableCollision(false);
 					BatchGridSoldier->SetActorLocation(FVector(gridPos.X, gridPos.Y, height));
+
+					UE_LOG(LogTemp, Warning, TEXT("####TrackMouseOnPlane Move other grid %i / %i"), row, col);
+
 				}
 
 			}

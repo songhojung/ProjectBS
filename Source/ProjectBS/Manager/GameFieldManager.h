@@ -32,11 +32,17 @@ protected:
 
 	bool CanTick = true;
 
+	int32 LastHoverMouseBatchGridIndex = -1;
+
+	TWeakObjectPtr<class APlayerController> PlayerController;
+	
 	TWeakObjectPtr<class ABatchGridActor> BatchGrid;
 
 	class ASoldierBaseCharacter* BatchGridSoldier;
 
 	TArray<ASoldierBaseCharacter*> SoldierArray;
+
+	TMap<int32,bool> OwnTeamBatchGridAssignedMap;
 	
 protected:
 	void OnWorldBeginPlay();
@@ -49,5 +55,6 @@ public:
 	void BatchSoldier(int32 soldierId, FVector location, ETeamType teamType);
 
 	class ABatchGridActor* GetBatchGrid();
-	
+
+	FORCEINLINE bool IsContainGridIndex(int32 gridIndex) {return OwnTeamBatchGridAssignedMap.Contains(gridIndex);} 
 };

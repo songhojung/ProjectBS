@@ -121,7 +121,10 @@ void AProjectBSPlayerController::OnSetDestinationReleased()
 			grid->LocationToTile(Hit.Location,row,col);
 			grid->TileToGridLocation(row,col,true, outGridCenterLocation);
 
-			UGameFieldManager::Get(this)->BatchSoldier(1,FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
+			int32 gridIndex = grid->GetGridIndex(row,col);
+
+			if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
+				UGameFieldManager::Get(this)->BatchSoldier(1,FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
 		}
 	}
 	else
