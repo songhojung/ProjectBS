@@ -41,7 +41,9 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Grid")
 	FColor LineColor;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Grid")
-	FColor SelectionColor;
+	FColor SelectionEnableColor;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Grid")
+	FColor SelectionDisableColor;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Grid")
 	float LineOpacity;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Grid")
@@ -51,6 +53,9 @@ protected:
 	int32 SoldierCharIdOnGrid; // 그리드에 배치할 병사 id
 	int32 LastSelectionRow;
 	int32 LastSelectionColumn;
+
+	UMaterialInstanceDynamic* selectionEnableMatInstanceDynamic ;
+	UMaterialInstanceDynamic* selectionDisableMatInstanceDynamic ;
 
 public:
 	FORCEINLINE int32 GetNumRows() const { return NumRows; }
@@ -71,7 +76,8 @@ public:
 	void MakeBatchGrid();
 	bool LocationToTile(FVector location, int32& outRow, int32& outColumn);
 	bool TileToGridLocation(int32 row, int32 column, bool isCenter, FVector2d& outGridLocation);
-	void SetSelectedTile(int32 row, int32 column);
+	void SetSelectedTile(int32 row, int32 column,bool isGreenSelectionColor);
+	int32 GetGridIndex(int32 row, int32 column);
 	bool TileValid(int32 row, int32 column);
 
 	void SetActiveBatchGrid(bool isActive);

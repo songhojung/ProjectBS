@@ -19,9 +19,10 @@ ABatchGridActor::ABatchGridActor()
 	NumColumns = 10;
 	TileSize = 200.f;
 	LineThickness = 10.f;
-	LineColor = FColor::Green;
-	LineOpacity = 1.0f;
-	SelectionColor = FColor::Red;
+	LineColor = FColor::Blue;
+	LineOpacity = 0.8f;
+	SelectionEnableColor = FColor::Green;
+	SelectionDisableColor = FColor::Red;
 	SelectionOpacity = 0.25f;
 	
 	LastSelectionRow = -1;
@@ -154,7 +155,9 @@ void ABatchGridActor::MakeBatchGrid()
 {
 	UMaterialInstanceDynamic* lineMatInstanceDynamic =  CreateMaterialInstance(LineColor,LineOpacity);
 	
-	UMaterialInstanceDynamic* selectionMatInstanceDynamic = CreateMaterialInstance(SelectionColor,SelectionOpacity);
+	selectionEnableMatInstanceDynamic = CreateMaterialInstance(SelectionEnableColor,SelectionOpacity);
+	
+	selectionDisableMatInstanceDynamic = CreateMaterialInstance(SelectionDisableColor,SelectionOpacity);
 
 	TArray<FVector> lineVertices;
 	TArray<int32> lineTriangles;
@@ -200,7 +203,7 @@ void ABatchGridActor::MakeBatchGrid()
 	FVector end = FVector(TileSize,TileSize/2,0);
 	CreateLine(start,end,TileSize,selectionVertices,selectionTriangles);
 	SelectionProceduralMesh->CreateMeshSection(0,selectionVertices,selectionTriangles,TArray<FVector>(),TArray<FVector2D>(),TArray<FColor>(),TArray<FProcMeshTangent>(),true);
-	SelectionProceduralMesh->SetMaterial(0,Cast<UMaterialInstance>(selectionMatInstanceDynamic));
+	SelectionProceduralMesh->SetMaterial(0,Cast<UMaterialInstance>(selectionEnableMatInstanceDynamic));
 	SelectionProceduralMesh->SetVisibility(false);
 }
 
@@ -228,13 +231,18 @@ bool ABatchGridActor::TileToGridLocation(int32 row, int32 column, bool isCenter,
 	return TileValid(row,column);
 }
 
-void ABatchGridActor::SetSelectedTile(int32 row, int32 column)
+void ABatchGridActor::SetSelectedTile(int32 row, int32 column, bool isGreenSelectionColor)
 {
 	FVector2d gridPos;
 	bool isLocate = TileToGridLocation(row,column,false,gridPos);
 
 	if(isLocate)
 	{
+		if(isGreenSelectionColor)
+			SelectionProceduralMesh->SetMaterial(0,Cast<UMaterialInstance>(selectionEnableMatInstanceDynamic));
+		else
+			SelectionProceduralMesh->SetMaterial(0,Cast<UMaterialInstance>(selectionDisableMatInstanceDynamic));
+
 		SelectionProceduralMesh->SetVisibility(true);
 
 		FVector pos = FVector(gridPos.X,gridPos.Y, GetActorLocation().Z);
@@ -244,6 +252,14 @@ void ABatchGridActor::SetSelectedTile(int32 row, int32 column)
 	{
 		SelectionProceduralMesh->SetVisibility(false);
 	}
+}
+
+int32 ABatchGridActor::GetGridIndex(int32 row, int32 column)
+{
+	// int32 rowIndex = row / NumRows;
+	int32 columnIndex = column % NumColumns;
+
+	return ((row - 1) * NumRows )+ columnIndex;
 }
 
 bool ABatchGridActor::TileValid(int32 row, int32 column)
