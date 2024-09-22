@@ -28,8 +28,13 @@ public:
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UGameFieldManager, STATGROUP_Tickables); }
 	
 protected:
+
+	TArray<TWeakObjectPtr<class ASpawnArea>> SpawnAreaArray;
+	
 	UClass* SoldierClass = nullptr;
 
+	bool HasStartedBattle = false;
+	
 	bool CanTick = true;
 
 	int32 LastHoverMouseBatchGridIndex = -1;
@@ -47,13 +52,15 @@ protected:
 protected:
 	void OnWorldBeginPlay();
 	void TrackMouseOnPlane();
-	ASoldierBaseCharacter* CreateSoldier(int32 soldierId, FVector location, ETeamType teamType);
+	ASoldierBaseCharacter* CreateSoldier(int32 soldierId, FVector location, FRotator rotation, ETeamType teamType);
 
 public:
 	void StartBattleInField(int32 forceCount);
 
-	void BatchSoldier(int32 soldierId, FVector location, ETeamType teamType);
+	void BatchSoldier(int32 soldierId, FVector location,  ETeamType teamType);
 
+	class ASpawnArea* GetTeamSpawnArea(ETeamType teamType);
+	
 	class ABatchGridActor* GetBatchGrid();
 
 	FORCEINLINE bool IsContainGridIndex(int32 gridIndex) {return OwnTeamBatchGridAssignedMap.Contains(gridIndex);} 
