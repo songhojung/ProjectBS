@@ -21,7 +21,7 @@ UGameFieldManager::UGameFieldManager()
 		
 	}
 
-	CanTick = true;
+	CanTick = false;
 }
 
 UGameFieldManager* UGameFieldManager::Get(UObject* WorldContextObject)
@@ -37,6 +37,13 @@ void UGameFieldManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
+	// 에디터에서 실행 중인 경우 초기화를 하지 않음
+	if (!GetWorld() || !GetWorld()->IsGameWorld())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Skipping Subsystem Initialization in Editor."));
+		return;
+	}
+	
 	if (UWorld* World = GetWorld())
 	{
 		World->OnWorldBeginPlay.AddUObject(this, &UGameFieldManager::OnWorldBeginPlay);
@@ -59,6 +66,8 @@ void UGameFieldManager::OnWorldBeginPlay()
 
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
+	CanTick = true;
+
 }
 
 void UGameFieldManager::Tick(float DeltaTime)
@@ -68,6 +77,14 @@ void UGameFieldManager::Tick(float DeltaTime)
 
 bool UGameFieldManager::IsTickable() const
 {
+	// 에디터에서는 Tick을 막고, 게임 실행 시에만 Tick을 허용
+	if (!GetWorld() || !GetWorld()->IsGameWorld())
+	{
+		return false;  // 에디터에서는 Tick을 중지
+	}
+	
+
+	
 	return CanTick;
 }
 
