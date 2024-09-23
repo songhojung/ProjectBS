@@ -35,7 +35,7 @@ protected:
 
 	bool HasStartedBattle = false;
 	
-	bool CanTick = true;
+	bool CanTick = false;
 
 	int32 LastHoverMouseBatchGridIndex = -1;
 
