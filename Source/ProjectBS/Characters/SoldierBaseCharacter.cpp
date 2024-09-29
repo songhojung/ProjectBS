@@ -3,12 +3,14 @@
 
 #include "Characters/SoldierBaseCharacter.h"
 
+#include "ProjectBSGameMode.h"
 #include "AI/SoldierAIController.h"
 #include "CharacterProperty/SoldierStatComponent.h"
 #include "CharacterProperty/TeamComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 
 // Sets default values
@@ -166,7 +168,7 @@ void ASoldierBaseCharacter::SetDead()
 	bIsDead = true;
 
 	//움직임 없음처리
-GetCharacterMovement()->SetMovementMode(MOVE_None);
+	GetCharacterMovement()->SetMovementMode(MOVE_None);
 	
 	//죽는 에니메이션
 	UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
@@ -185,8 +187,23 @@ GetCharacterMovement()->SetMovementMode(MOVE_None);
 	//액터 충돌체 비활성
 	SetActorEnableCollision(false);
 
+	//게임모드에게 유닛 죽음 호출
+	AProjectBSGameMode* gameMode = Cast<AProjectBSGameMode>(UGameplayStatics::GetGameMode(this));
+	if(gameMode)
+	{
+		gameMode->OnDeadUnit(GetTeam(),1);
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("$$$$$ 222 Dead Sodlier : %s"), *GetName() );
 
+}
+
+void ASoldierBaseCharacter::SetStop()
+{
+	// AIController에서 AI 중지
+	ASoldierAIController* AIController = Cast<ASoldierAIController>(GetController());
+	if(AIController)
+		AIController->StopAI();
 }
 
 

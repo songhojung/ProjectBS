@@ -18,13 +18,15 @@ UUIManager* UUIManager::Get()
 	return Instance;
 }
 
-void UUIManager::AddUI(FString uiName, APlayerController* playerController)
+void UUIManager::AddUI(FString uiName, APlayerController* playerController,FCompletedAddUIDelegate completedCallback)
 {
 
 	///Script/UMGEditor.WidgetBlueprint'/Game/ProjectBS/UI/MainWidget.MainWidget'
 	if(UUserWidget* ui = GetUI(uiName))
 	{
 		AddWidgetToViewport(ui,playerController);
+
+		completedCallback.ExecuteIfBound(ui);
 	}
 	else
 	{
@@ -33,7 +35,9 @@ void UUIManager::AddUI(FString uiName, APlayerController* playerController)
 		FString uiNameStr = FString::Printf(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/ProjectBS/UI/%s.%s_C'"), *uiName, *uiName);
 		TSubclassOf<UUserWidget> createdWidgetClass = LoadClass<UUserWidget>(nullptr, *uiNameStr);
 
-		CreateUI(createdWidgetClass,playerController);
+		UUserWidget* createdUI = CreateUI(createdWidgetClass,playerController);
+
+		completedCallback.ExecuteIfBound(createdUI);
 	}
 	
 }

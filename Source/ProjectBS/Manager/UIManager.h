@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "UIManager.generated.h"
+
+DECLARE_DELEGATE_OneParam(FCompletedAddUIDelegate, UUserWidget*);
+
 
 /**
  * 
@@ -29,14 +31,11 @@ public:
 	
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "UI")
-	void AddUI(FString uiName,APlayerController* playerController);
+	void AddUI(FString uiName,APlayerController* playerController, FCompletedAddUIDelegate completedCallback = nullptr);
 	
 
-	UFUNCTION(BlueprintCallable, Category = "UI")
 	UUserWidget* CreateUI(TSubclassOf<UUserWidget> widgetClass,APlayerController* playerController);
 
-	UFUNCTION(BlueprintCallable, Category = "UI")
 	void RemoveUI(UUserWidget* userWidget);
 
 protected:

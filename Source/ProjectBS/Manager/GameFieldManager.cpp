@@ -119,6 +119,8 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 
 				//AI 시작
 				soldier->GetAIController()->StartAI();
+
+				OtherSoldierArray.Add(soldier);
 			}
 
 			FString teamStr = StaticEnum<ETeamType>()->GetValueAsString(SpawnArea->GetTeamType());
@@ -130,7 +132,7 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 
 
 	//자신팀 병력도 AI 시작
-	for (auto soldier : SoldierArray)
+	for (auto soldier : OwnSoldierArray)
 	{
 		soldier->GetAIController()->StartAI();
 	}
@@ -159,7 +161,7 @@ void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 	ASoldierBaseCharacter* soldier = CreateSoldier(TargetBatchSoliderCharId, location, teamRotation, teamType);
 
 	//생성된 병사 컨테이너에 ADD
-	SoldierArray.Add(soldier);
+	OwnSoldierArray.Add(soldier);
 
 	int32 row;
 	int32 col;
@@ -190,6 +192,8 @@ void UGameFieldManager::ChangeSampleBatchSoldier(int32 charId)
 	BatchGridSampleSoldier->SetActorHiddenInGame(false);
 	BatchGridSampleSoldier->SetActorEnableCollision(false);
 }
+
+
 
 
 ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType)
@@ -328,4 +332,17 @@ class ABatchGridActor* UGameFieldManager::GetBatchGrid()
 		}
 	}
 	return nullptr;
+}
+
+
+TArray<ASoldierBaseCharacter*> UGameFieldManager::GetTeamSoldierArray(ETeamType teamType)
+{
+	if(teamType == ETeamType::OwnTeam)
+	{
+		return OwnSoldierArray;
+	}
+	else
+	{
+		return  OtherSoldierArray;	
+	}
 }

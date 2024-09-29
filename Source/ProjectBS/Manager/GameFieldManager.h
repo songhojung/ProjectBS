@@ -47,7 +47,8 @@ protected:
 
 	class ASoldierBaseCharacter* BatchGridSampleSoldier;
 
-	TArray<ASoldierBaseCharacter*> SoldierArray;
+	TArray<ASoldierBaseCharacter*> OwnSoldierArray;
+	TArray<ASoldierBaseCharacter*> OtherSoldierArray;
 
 	TMap<int32,bool> OwnTeamBatchGridAssignedMap;
 	
@@ -71,6 +72,8 @@ public:
 	class ASpawnArea* GetTeamSpawnArea(ETeamType teamType);
 	
 	class ABatchGridActor* GetBatchGrid();
+
+	TArray<ASoldierBaseCharacter*> GetTeamSoldierArray(ETeamType teamType);
 
 	FORCEINLINE bool IsContainGridIndex(int32 gridIndex) {return OwnTeamBatchGridAssignedMap.Contains(gridIndex);} 
 };
