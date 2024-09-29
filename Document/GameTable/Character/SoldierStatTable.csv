@@ -1,5 +1,5 @@
-﻿Name,Id,MaxHp,AttackDamage,AttackSpeed,MovementSpeed,
-HandCombatSoldier,1,100,50,10,10,
-HandCombatSoldier2,2,110,40,10,10,
-HandCombatSoldier3,3,100,50,8,20,
-HandCombatSoldier4,4,200,100,5,5,
+﻿Name,Id,MaxHp,AttackDamage,AttackSpeed,MovementSpeed
+HandCombatSoldier,1,100,50,10,10
+HandCombatSoldier2,2,110,40,10,10
+HandCombatSoldier3,3,100,50,8,20
+HandCombatSoldier4,4,200,100,5,5
