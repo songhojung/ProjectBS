@@ -23,6 +23,6 @@ public:
     float AttackSpeed;
      
     UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Stat")
-    float MovementSpeed;   
+    float MovementSpeed;
 
 };
