@@ -39,11 +39,13 @@ protected:
 
 	int32 LastHoverMouseBatchGridIndex = -1;
 
+	int32 TargetBatchSoliderCharId = 1;		//유저가 선택한 배치할 병력 CharId
+	
 	TWeakObjectPtr<class APlayerController> PlayerController;
 	
 	TWeakObjectPtr<class ABatchGridActor> BatchGrid;
 
-	class ASoldierBaseCharacter* BatchGridSoldier;
+	class ASoldierBaseCharacter* BatchGridSampleSoldier;
 
 	TArray<ASoldierBaseCharacter*> SoldierArray;
 
@@ -52,13 +54,20 @@ protected:
 protected:
 	void OnWorldBeginPlay();
 	void TrackMouseOnPlane();
-	ASoldierBaseCharacter* CreateSoldier(int32 soldierId, FVector location, FRotator rotation, ETeamType teamType);
+	UClass* LoadCharacterClass(int charTableId);
+	ASoldierBaseCharacter* CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType);
 
 public:
 	void StartBattleInField(int32 forceCount);
 
-	void BatchSoldier(int32 soldierId, FVector location,  ETeamType teamType);
+	void BatchSoldier(FVector location,  ETeamType teamType);
 
+	void ChangeSampleBatchSoldier(int32 charId);
+
+	FORCEINLINE void SetTargetBatchSoliderCharId(int32 charId){TargetBatchSoliderCharId = charId;}
+
+	FORCEINLINE int32 GetTargetBatchSoliderCharId(){return TargetBatchSoliderCharId;}
+	
 	class ASpawnArea* GetTeamSpawnArea(ETeamType teamType);
 	
 	class ABatchGridActor* GetBatchGrid();

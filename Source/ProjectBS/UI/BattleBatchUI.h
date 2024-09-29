@@ -23,6 +23,8 @@ public:
 	UFUNCTION()
 	void TextBoxTextChanged(const FText& Text, ETextCommit::Type CommitMethod);
 
+	void BatchUnitItemClicked(int32 id);
+	
 		
 protected:
 	int32 ForceCount = 1; //병력 숫자

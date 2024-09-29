@@ -124,7 +124,7 @@ void AProjectBSPlayerController::OnSetDestinationReleased()
 			int32 gridIndex = grid->GetGridIndex(row,col);
 
 			if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
-				UGameFieldManager::Get(this)->BatchSoldier(1,FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
+				UGameFieldManager::Get(this)->BatchSoldier(FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
 		}
 	}
 	else

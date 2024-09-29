@@ -104,7 +104,7 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
 		if(SpawnArea!= nullptr && SpawnArea->GetTeamType() == ETeamType::EnemyTeam)
 		{
-			FSoldierStatData statData = UGameDataManager::Get()->GetSoldierStatData(1);
+			const FSoldierStatData* statData = UGameDataManager::Get()->GetSoldierStatData(1);
 			
 			for (int i = 0 ; i < forceCount; i++)
 			{
@@ -113,7 +113,7 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 				FVector SpawnLocation = SpawnArea->GetActorLocation() + FVector(row * 100, column * 100, 0); 
 				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
 				soldier->SetTeam(SpawnArea->GetTeamType());
-				soldier->SetStat(statData);
+				soldier->SetStat(*statData);
 
 				UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
 
@@ -136,8 +136,8 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 	}
 
 	//배치 병사 안보이게
-	if(BatchGridSoldier!=nullptr)
-		BatchGridSoldier->SetActorHiddenInGame(true);
+	if(BatchGridSampleSoldier!=nullptr)
+		BatchGridSampleSoldier->SetActorHiddenInGame(true);
 
 	//TICK 처리 안하게
 	CanTick = false;
@@ -146,7 +146,7 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 	HasStartedBattle = true;
 }
 
-void UGameFieldManager::BatchSoldier(int32 soldierId, FVector location, ETeamType teamType)
+void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 {
 	//배틀 시작되면 병력 배치 안됨 무시처리
 	if(HasStartedBattle)
@@ -156,7 +156,7 @@ void UGameFieldManager::BatchSoldier(int32 soldierId, FVector location, ETeamTyp
 	ASpawnArea* teamSpawnArea = GetTeamSpawnArea(teamType);
 	FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
 	
-	ASoldierBaseCharacter* soldier = CreateSoldier(soldierId, location, teamRotation, teamType);
+	ASoldierBaseCharacter* soldier = CreateSoldier(TargetBatchSoliderCharId, location, teamRotation, teamType);
 
 	//생성된 병사 컨테이너에 ADD
 	SoldierArray.Add(soldier);
@@ -172,17 +172,38 @@ void UGameFieldManager::BatchSoldier(int32 soldierId, FVector location, ETeamTyp
 		OwnTeamBatchGridAssignedMap.Add(gridIndex,true);
 }
 
-
-
-ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 soldierId, FVector location, FRotator rotation, ETeamType teamType)
+void UGameFieldManager::ChangeSampleBatchSoldier(int32 charId)
 {
+	if(TargetBatchSoliderCharId == charId)
+		return;
+
+	//기존꺼 파괴
+	if(BatchGridSampleSoldier !=nullptr)
+		BatchGridSampleSoldier->Destroy();
+	
+	//배치해서  병력이 바라 볼 방향 
+	ASpawnArea* teamSpawnArea = GetTeamSpawnArea(ETeamType::OwnTeam);
+	FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
 	//병사 오브젝트 로드해서 위치시킨다
-	FSoldierStatData statData = UGameDataManager::Get()->GetSoldierStatData(soldierId);
+	BatchGridSampleSoldier = CreateSoldier(charId,FVector(0.f,0.f,0.f),teamRotation,ETeamType::OwnTeam);
+	
+	BatchGridSampleSoldier->SetActorHiddenInGame(false);
+	BatchGridSampleSoldier->SetActorEnableCollision(false);
+}
+
+
+ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType)
+{
+	UClass* soldierClass = LoadCharacterClass(charId);
+	
+	//병사 오브젝트 로드해서 위치시킨다
+	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(charId);
+	const FSoldierStatData* statData = UGameDataManager::Get()->GetSoldierStatData(charData->StatId);
 	FVector spawnLocation = location;
 	FRotator spawnRotation = rotation;
-	ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( spawnRotation, spawnLocation));
+	ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(soldierClass, FTransform( spawnRotation, spawnLocation));
 	soldier->SetTeam(teamType);
-	soldier->SetStat(statData);
+	soldier->SetStat(*statData);
 
 	float height = soldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	spawnLocation = FVector(location.X, location.Y, height);
@@ -225,24 +246,24 @@ void UGameFieldManager::TrackMouseOnPlane()
 			{
 				UE_LOG(LogTemp, Warning, TEXT("@@@@TrackMouseOnPlane %i / %i"), row, col);
 
-				if(BatchGridSoldier == nullptr)
+				if(BatchGridSampleSoldier == nullptr)
 				{
 					//배치해서  병력이 바라 볼 방향 
 					ASpawnArea* teamSpawnArea = GetTeamSpawnArea(ETeamType::OwnTeam);
 					FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
 					//병사 오브젝트 로드해서 위치시킨다
-					BatchGridSoldier = CreateSoldier(1,FVector(gridPos.X,gridPos.Y,0.f),teamRotation,ETeamType::OwnTeam);
-					BatchGridSoldier->SetActorEnableCollision(false);
+					BatchGridSampleSoldier = CreateSoldier(TargetBatchSoliderCharId,FVector(gridPos.X,gridPos.Y,0.f),teamRotation,ETeamType::OwnTeam);
+					BatchGridSampleSoldier->SetActorEnableCollision(false);
 
 					UE_LOG(LogTemp, Warning, TEXT("!@!@!@TrackMouseOnPlane CreateSoldier %i / %i"), row, col);
 
 				}
 				else
 				{
-					float height = BatchGridSoldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-					BatchGridSoldier->SetActorHiddenInGame(false);
-					BatchGridSoldier->SetActorEnableCollision(false);
-					BatchGridSoldier->SetActorLocation(FVector(gridPos.X, gridPos.Y, height));
+					float height = BatchGridSampleSoldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+					BatchGridSampleSoldier->SetActorHiddenInGame(false);
+					BatchGridSampleSoldier->SetActorEnableCollision(false);
+					BatchGridSampleSoldier->SetActorLocation(FVector(gridPos.X, gridPos.Y, height));
 
 					UE_LOG(LogTemp, Warning, TEXT("####TrackMouseOnPlane Move other grid %i / %i"), row, col);
 
@@ -251,13 +272,28 @@ void UGameFieldManager::TrackMouseOnPlane()
 			}
 			else
 			{
-				if(BatchGridSoldier!=nullptr)
-					BatchGridSoldier->SetActorHiddenInGame(true);
+				if(BatchGridSampleSoldier!=nullptr)
+					BatchGridSampleSoldier->SetActorHiddenInGame(true);
 			}
 			
 			// UE_LOG(LogTemp, Warning, TEXT("@@@@TeamSpawn Completed : %s / x: %.2f , y : %.2f, z : %.2f"), *Hit.GetActor()->GetName(), Hit.GetActor()->GetActorLocation().X, Hit.GetActor()->GetActorLocation().Y, Hit.GetActor()->GetActorLocation().Z );
 		}
 	}
+}
+
+UClass* UGameFieldManager::LoadCharacterClass(int charTableId)
+{
+	//Blueprint'/Game/ProjectBS/Blueprints/BP_SoldierBase.BP_SoldierBase'
+	///Script/Engine.Blueprint'/Game/ProjectBS/Blueprints/Soldiers/BP_Soldier_Jabjong1.BP_Soldier_Jabjong1'
+	const FSoldierCharData* charDataPtr = UGameDataManager::Get()->GetSoldierCharData(charTableId);
+	FString classRefPath = FString::Printf(TEXT("Blueprint'/Game/ProjectBS/Blueprints/Soldiers/%s.%s'"),*charDataPtr->ResourceName,*charDataPtr->ResourceName);
+	UObject* loadedObject = StaticLoadObject(UObject::StaticClass(),nullptr,*classRefPath);
+	UBlueprint* loadedBP = Cast<UBlueprint>(loadedObject);
+
+	if(loadedBP)
+		return loadedBP->GeneratedClass;
+	else
+		return nullptr;
 }
 
 class ASpawnArea* UGameFieldManager::GetTeamSpawnArea(ETeamType teamType)

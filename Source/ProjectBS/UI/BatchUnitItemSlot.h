@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "GameData/SoldierCharData.h"
 #include "BatchUnitItemSlot.generated.h"
 
 /**
@@ -24,4 +25,14 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Button_Slot;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* Image_Item;
+
+protected:
+
+	uint32 Id;
+	
+public:
+	void SetSlot(const FSoldierCharData charTable);	
 };

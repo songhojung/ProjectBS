@@ -80,10 +80,17 @@ bool UUIManager::IsContainUI(FString uiName)
 	for (int i = 0; i < UIList.Num(); ++i)
 	{
 		UUserWidget* ui = UIList[i];
-		
-		if(uiName == ui->GetName())
+
+		// UI의 이름에서 '_C'를 제거
+		FString actualUIName;
+		FString unusedPart;
+			
+		if (ui->GetName().Split(TEXT("_"), &actualUIName, &unusedPart))
 		{
-			return true;
+			if(uiName == actualUIName)
+			{
+				return true;
+			}
 		}
 	}
 
@@ -95,10 +102,20 @@ UUserWidget* UUIManager::GetUI(FString uiName)
 	for (int i = 0; i < UIList.Num(); ++i)
 	{
 		UUserWidget* ui = UIList[i];
-		
-		if(ui !=nullptr && uiName  == ui->GetName())
+
+		if(ui !=nullptr)
 		{
-			return ui;
+			// UI의 이름에서 '_C'를 제거
+			FString actualUIName;
+			FString unusedPart;
+			
+			if (ui->GetName().Split(TEXT("_"), &actualUIName, &unusedPart))
+			{
+				if(uiName  == actualUIName)
+				{
+					return ui;
+				}
+			}
 		}
 	}
 
