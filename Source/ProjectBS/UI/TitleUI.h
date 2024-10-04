@@ -27,12 +27,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UButton* Btn_Start;
 
-	UPROPERTY(meta = (BindWidget))
-	UEditableTextBox* TextBox_Num;
-
 	UFUNCTION()
 	void StartButtonClicked();
 
-	UFUNCTION()
-	void TextBoxTextChanged(const FText& Text, ETextCommit::Type CommitMethod);
 };
