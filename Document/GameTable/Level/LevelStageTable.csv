@@ -1,2 +1,3 @@
 ﻿Name,Id,StageName,OwnTeamMaxCost,OwnTeamBatchGridSize,EnemyTeamBatchGridSize,EnemyTeamCharNum,EnemyTeamBatchCharIds,EnemyTeamBatchPositions,EvnFlag,EvnId,EvnName,EvnSize,AddMoveSpeedValue,AddAttackSpeedValue
-stage1,1,"""Basic_level11""",1000,"(8,8)","(8,8)",10,"(1,2,3)","(5,14,15,16)",FALSE,1,"""늪지대""",100,0.2,0.3
+stage1,1,Basic_level11,1000,"(8,8)","(8,8)",10,"(1,2,3)","(5,14,15,16)",FALSE,1,"""늪지대""",100,0.2,0.3
+stage2,2,Basic_level12,1000,"(8,8)","(8,8)",10,"(1,2,3)","(5,14,15,16)",FALSE,1,"""늪지대""",100,0.2,0.3
