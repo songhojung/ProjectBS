@@ -216,6 +216,29 @@ ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector lo
 	return soldier;
 }
 
+void UGameFieldManager::CreateBatchGridActor()
+{
+	//필드에 배치 grid 생성
+	if(BatchGrid==nullptr)
+	{
+		FVector2d gridCenterLocation;
+		FVector location = FVector(0.f,0.f,5.f);
+		FRotator rotation = FRotator(0.f,0.f,0.f);
+
+		UClass* batchGridClass = LoadBatchGridClass();
+		BatchGrid =  GetWorld()->SpawnActorDeferred<ABatchGridActor>(batchGridClass,FTransform(rotation,location));
+		BatchGrid->SetNumRowsAndColumes(10,10);
+		BatchGrid->TileToGridLocation(BatchGrid->GetNumRows() / 2, BatchGrid->GetNumColumns() / 2 , false ,gridCenterLocation);
+		BatchGrid->MakeBatchGrid();
+		UGameplayStatics::FinishSpawningActor(BatchGrid,FTransform( rotation, FVector(location.X,-gridCenterLocation.Y,location.Z)));
+
+	}
+	else
+	{
+		BatchGrid->SetActiveBatchGrid(true);
+	}
+}
+
 void UGameFieldManager::TrackMouseOnPlane()
 {
 	// APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -226,7 +249,7 @@ void UGameFieldManager::TrackMouseOnPlane()
 	FHitResult Hit;
 	if(PlayerController.IsValid()&& PlayerController.Get()->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit))
 	{
-		ABatchGridActor* grid =  GetBatchGrid();
+		ABatchGridActor* grid =  BatchGrid;
 
 		if(grid !=nullptr)
 		{
@@ -300,6 +323,20 @@ UClass* UGameFieldManager::LoadCharacterClass(int charTableId)
 		return nullptr;
 }
 
+UClass* UGameFieldManager::LoadBatchGridClass()
+{
+	///Script/Engine.Blueprint'/Game/ProjectBS/Blueprints/BP_Batch.BP_Batch'
+	FString classRefPath = FString::Printf(TEXT("Blueprint'/Game/ProjectBS/Blueprints/BP_Batch.BP_Batch'"));
+	UObject* loadedObject = StaticLoadObject(UObject::StaticClass(),nullptr,*classRefPath);
+	UBlueprint* loadedBP = Cast<UBlueprint>(loadedObject);
+
+	if(loadedBP)
+		return loadedBP->GeneratedClass;
+	else
+		return nullptr;
+	
+}
+
 class ASpawnArea* UGameFieldManager::GetTeamSpawnArea(ETeamType teamType)
 {
 	for (auto spawnArea : SpawnAreaArray)
@@ -316,20 +353,9 @@ class ASpawnArea* UGameFieldManager::GetTeamSpawnArea(ETeamType teamType)
 
 class ABatchGridActor* UGameFieldManager::GetBatchGrid()
 {
-	if(BatchGrid.IsValid())
+	if(BatchGrid != nullptr)
 	{
 		return  BatchGrid.Get();
-	}
-	else
-	{
-		TArray<AActor*> actors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABatchGridActor::StaticClass(), actors);
-
-		if(actors.Num()>0)
-		{
-			BatchGrid = Cast<ABatchGridActor>(actors[0]);
-			return BatchGrid.Get();
-		}
 	}
 	return nullptr;
 }

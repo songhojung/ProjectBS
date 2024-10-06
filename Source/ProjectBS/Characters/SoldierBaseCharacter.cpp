@@ -3,14 +3,13 @@
 
 #include "Characters/SoldierBaseCharacter.h"
 
-#include "ProjectBSGameMode.h"
 #include "AI/SoldierAIController.h"
 #include "CharacterProperty/SoldierStatComponent.h"
 #include "CharacterProperty/TeamComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "GameMode/BSGameInstance.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 
 // Sets default values
@@ -187,11 +186,11 @@ void ASoldierBaseCharacter::SetDead()
 	//액터 충돌체 비활성
 	SetActorEnableCollision(false);
 
-	//게임모드에게 유닛 죽음 호출
-	AProjectBSGameMode* gameMode = Cast<AProjectBSGameMode>(UGameplayStatics::GetGameMode(this));
-	if(gameMode)
+	//게임인스턴스에게 유닛 죽음 호출
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	if(gameIns)
 	{
-		gameMode->OnDeadUnit(GetTeam(),1);
+		gameIns->OnDeadUnit(GetTeam(),1);
 	}
 	
 	UE_LOG(LogTemp, Warning, TEXT("$$$$$ 222 Dead Sodlier : %s"), *GetName() );

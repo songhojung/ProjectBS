@@ -20,6 +20,7 @@ void UTitleUI::StartButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Start Button Clicked!"));
 
+	
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
 	if(gameIns)
 	{
@@ -27,5 +28,6 @@ void UTitleUI::StartButtonClicked()
 	}
 
 	UUIManager::Get()->RemoveUI(this);
+
 }
 

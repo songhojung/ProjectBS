@@ -38,6 +38,7 @@ UGameDataManager::UGameDataManager()
 
 	LoadDataTable(TEXT("SoldierStatTable"),SoldierStatTables);
 	LoadDataTable(TEXT("SoldierCharTable"),SoldierCharTables);
+	LoadDataTable(TEXT("LevelStageTable"),LevelStageTables);
 	
 }
 
@@ -81,6 +82,19 @@ const FSoldierStatData* UGameDataManager::GetSoldierStatData(int id)
 const FSoldierCharData* UGameDataManager::GetSoldierCharData(int id)
 {
 	FSoldierCharData* findData = SoldierCharTables.FindByPredicate([id](const FSoldierCharData& data)
+	{
+		return data.Id == id;
+	});
+
+	if(findData)
+		return findData;
+	else
+		return nullptr;
+}
+
+const FLevelStageData* UGameDataManager::GetLevelStageData(int id)
+{
+	FLevelStageData* findData = LevelStageTables.FindByPredicate([id](const FLevelStageData& data)
 	{
 		return data.Id == id;
 	});

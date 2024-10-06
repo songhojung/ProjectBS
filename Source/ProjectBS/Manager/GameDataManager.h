@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameData/LevelStageData.h"
 #include "GameData/SoldierCharData.h"
 #include "GameData/SoldierStatData.h"
 #include "GameDataManager.generated.h"
@@ -26,12 +27,14 @@ private:
 	template <typename StructType>
 	void LoadDataTable(const FString& TableName, TArray<StructType>& OutArray);
 public:
-	FORCEINLINE const FSoldierStatData* GetSoldierStatData(int id) ;
-	FORCEINLINE const FSoldierCharData* GetSoldierCharData(int id);
+	const FSoldierStatData* GetSoldierStatData(int id) ;
+	const FSoldierCharData* GetSoldierCharData(int id);
+	const FLevelStageData* GetLevelStageData(int id);
 
 private:
 	TArray<FSoldierStatData> SoldierStatTables;
 	TArray<FSoldierCharData> SoldierCharTables;
+	TArray<FLevelStageData> LevelStageTables;
 	
 };
 

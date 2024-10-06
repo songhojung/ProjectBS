@@ -7,6 +7,7 @@
 #include "TitleUI.h"
 #include "Components/Button.h"
 #include "Components/UniformGridPanel.h"
+#include "GameMode/BSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Manager/GameDataManager.h"
 #include "Manager/GameFieldManager.h"
@@ -45,9 +46,9 @@ void UBattleBatchUI::StartButtonClicked()
 
 
 
-	AProjectBSGameMode* gameMode = Cast<AProjectBSGameMode>(UGameplayStatics::GetGameMode(this));
-	if(gameMode)
-		gameMode->BattleStart(ForceCount);
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	if(gameIns)
+		gameIns->BattleStart(ForceCount);
 	
 
 	UUIManager::Get()->RemoveUI(this);

@@ -36,15 +36,15 @@ public:
 	TObjectPtr<class ABatchGridActor> BatchGrid;
 
 public:
-	void SetGameLevel(int32 newGameLevel) {GameLevel = newGameLevel;} 
-
-	void GameStart(int32 gameLevel);
-
-	void BattleStart(int32 count);
-
-	void OnDeadUnit(ETeamType teamType, int32 count);
-
-	void BattleEnd();
+	// void SetGameLevel(int32 newGameLevel) {GameLevel = newGameLevel;} 
+	//
+	// void GameStart(int32 gameLevel);
+	//
+	// void BattleStart(int32 count);
+	//
+	// void OnDeadUnit(ETeamType teamType, int32 count);
+	//
+	// void BattleEnd();
 	
 };
 

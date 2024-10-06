@@ -13,7 +13,9 @@
 #include "InputMappingContext.h"
 #include "BatchGrid/BatchGridActor.h"
 #include "Engine/LocalPlayer.h"
+#include "GameMode/BSGameInstance.h"
 #include "Manager/GameFieldManager.h"
+#include "Manager/UIManager.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -43,6 +45,17 @@ void AProjectBSPlayerController::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+
+	if(gameIns && gameIns->IsGameStarted() ==false)
+	{
+		//타이틀 UI 노출
+		UUIManager::Get()->AddUI(TEXT("TitleUI"),this);
+
+		//게임 시작 플레그 설정
+		gameIns->SetGameStartedFlag(true);
+	}
 }
 
 void AProjectBSPlayerController::SetupInputComponent()

@@ -42,8 +42,9 @@ protected:
 	int32 TargetBatchSoliderCharId = 1;		//유저가 선택한 배치할 병력 CharId
 	
 	TWeakObjectPtr<class APlayerController> PlayerController;
-	
-	TWeakObjectPtr<class ABatchGridActor> BatchGrid;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Batch Grid")
+	TObjectPtr<class ABatchGridActor> BatchGrid;
 
 	class ASoldierBaseCharacter* BatchGridSampleSoldier;
 
@@ -56,7 +57,10 @@ protected:
 	void OnWorldBeginPlay();
 	void TrackMouseOnPlane();
 	UClass* LoadCharacterClass(int charTableId);
+	UClass* LoadBatchGridClass();
 	ASoldierBaseCharacter* CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType);
+public:
+	void CreateBatchGridActor();
 
 public:
 	void StartBattleInField(int32 forceCount);

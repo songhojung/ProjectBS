@@ -6,6 +6,7 @@
 #include "ProjectBSGameMode.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "GameMode/BSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Manager/UIManager.h"
 
@@ -36,26 +37,33 @@ void UBattleEndUI::SetUI(ETeamType teamType)
 
 void UBattleEndUI::ButtonNextLevelClicked()
 {
-	//게임모드에게 유닛 죽음 호출
-	AProjectBSGameMode* gameMode = Cast<AProjectBSGameMode>(UGameplayStatics::GetGameMode(this));
-	if(gameMode)
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	if(gameIns)
 	{
-		gameMode->GameStart(1);
+		int levelId = gameIns->GetGameLevelId();
+		int nextLeveId = levelId + 1;
+		
+		if(gameIns->CheckGameLevelId(nextLeveId))
+		{
+			gameIns->SetGameLevelId(nextLeveId);
+			gameIns->GameStart(nextLeveId);
+
+			UUIManager::Get()->RemoveUI(this);
+
+		}
+
 	}
 	
-	UUIManager::Get()->RemoveUI(this);
 }
 
 void UBattleEndUI::ButtonGotoMenuClicked()
 {
-	//게임모드에게 유닛 죽음 호출
-	AProjectBSGameMode* gameMode = Cast<AProjectBSGameMode>(UGameplayStatics::GetGameMode(this));
-	if(gameMode)
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	if(gameIns)
 	{
-		gameMode->GameStart(1);
+		int levelId = gameIns->GetGameLevelId();
+		gameIns->GameStart(levelId);
 	}
-	
-	UUIManager::Get()->RemoveUI(this);
 }
 
 void UBattleEndUI::Empty()
