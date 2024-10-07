@@ -25,4 +25,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Stat")
     float MovementSpeed;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Stat")
+    float AttackRange;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Stat")
+    float SightRange;
+
 };
