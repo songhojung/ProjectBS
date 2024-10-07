@@ -31,12 +31,14 @@ public:
 	
 	int32 GameLevelId;
 
+	uint8 bBattleStarted : 1;
 	uint8 bBattleEnd : 1;
 
 	ETeamType BattleWinTeam;
 public:
 	FORCEINLINE void SetGameStartedFlag(uint8 _bGameStarted) { bGameStarted = _bGameStarted; }
 	FORCEINLINE bool IsGameStarted() const { return bGameStarted; }
+	FORCEINLINE bool IsBattleStarted() const { return bBattleStarted; }
 	FORCEINLINE int32 GetGameLevelId() {return GameLevelId;}
 	
 public:

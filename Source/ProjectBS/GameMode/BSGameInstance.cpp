@@ -15,6 +15,8 @@ class UBattleEndUI;
 UBSGameInstance::UBSGameInstance()
 {
 	bGameStarted = false;
+	bBattleStarted = false;
+	bBattleEnd = false;
 	
 	SetGameLevelId(1);
 }
@@ -61,14 +63,22 @@ void UBSGameInstance::PostGameLevelLoaded()
 		//배치 UI 노출
 		UUIManager::Get()->AddUI(TEXT("BattleBatchUI"),playerController);
 
+		//이전 필드 요소들 클리어
+		UGameFieldManager::Get(this)->ClearFieldComponents();
+		
 		//필드에 배치 grid actor 생성
 		UGameFieldManager::Get(this)->CreateBatchGridActor();
 	}
+
+	bBattleStarted = false;
 }
 
 void UBSGameInstance::BattleStart(int32 count)
 {
 	bBattleEnd = false;
+
+	bBattleStarted = true;
+ 
 	
 	// 게임필드 에 필드에 병력, 오브젝트 등 로드.
 	UGameFieldManager* gfm = UGameFieldManager::Get(this);

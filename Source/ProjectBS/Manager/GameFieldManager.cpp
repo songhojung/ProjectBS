@@ -66,7 +66,6 @@ void UGameFieldManager::OnWorldBeginPlay()
 
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
-	CanTick = true;
 
 }
 
@@ -137,23 +136,17 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		soldier->GetAIController()->StartAI();
 	}
 
-	//배치 병사 안보이게
+	//배치 병사 바로 파괴
 	if(BatchGridSampleSoldier!=nullptr)
-		BatchGridSampleSoldier->SetActorHiddenInGame(true);
+		DestroySampleBatchSoldier();
 
 	//TICK 처리 안하게
 	CanTick = false;
 
-	//배틀 시작 플레그 on
-	HasStartedBattle = true;
 }
 
 void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 {
-	//배틀 시작되면 병력 배치 안됨 무시처리
-	if(HasStartedBattle)
-		return;
-
 	//배치해서  병력이 바라 볼 방향 
 	ASpawnArea* teamSpawnArea = GetTeamSpawnArea(teamType);
 	FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
@@ -193,7 +186,23 @@ void UGameFieldManager::ChangeSampleBatchSoldier(int32 charId)
 	BatchGridSampleSoldier->SetActorEnableCollision(false);
 }
 
+void UGameFieldManager::DestroySampleBatchSoldier()
+{
+	if(BatchGridSampleSoldier!=nullptr)
+	{
+		BatchGridSampleSoldier->Destroy();
+		BatchGridSampleSoldier = nullptr;
+	}
+}
 
+void UGameFieldManager::ClearFieldComponents()
+{
+	OwnSoldierArray.Empty();
+	OtherSoldierArray.Empty();
+
+	OwnTeamBatchGridAssignedMap.Empty();
+	SpawnAreaArray.Empty();
+}
 
 
 ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType)
@@ -237,6 +246,10 @@ void UGameFieldManager::CreateBatchGridActor()
 	{
 		BatchGrid->SetActiveBatchGrid(true);
 	}
+
+	//그리드위 plane 체크 되도록 플레그 true 변경 
+	CanTick = true;
+
 }
 
 void UGameFieldManager::TrackMouseOnPlane()

@@ -33,8 +33,6 @@ protected:
 	
 	UClass* SoldierClass = nullptr;
 
-	bool HasStartedBattle = false;
-	
 	bool CanTick = false;
 
 	int32 LastHoverMouseBatchGridIndex = -1;
@@ -68,6 +66,10 @@ public:
 	void BatchSoldier(FVector location,  ETeamType teamType);
 
 	void ChangeSampleBatchSoldier(int32 charId);
+
+	void DestroySampleBatchSoldier();
+
+	void ClearFieldComponents();
 
 	FORCEINLINE void SetTargetBatchSoliderCharId(int32 charId){TargetBatchSoliderCharId = charId;}
 
