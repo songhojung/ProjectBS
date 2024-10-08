@@ -17,7 +17,8 @@ UBSGameInstance::UBSGameInstance()
 	bGameStarted = false;
 	bBattleStarted = false;
 	bBattleEnd = false;
-	
+
+	ClearBattleCost();
 	SetGameLevelId(1);
 }
 
@@ -31,6 +32,25 @@ void UBSGameInstance::OnPostLoadMap(UWorld* loadedWorld)
 {
 	//게임레벨 로드음 해당레벨의 이후 처리진행
 	PostGameLevelLoaded();
+}
+
+bool UBSGameInstance::IsEnoughBattleCost( int charId)
+{
+	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameLevelId);
+
+	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(charId);
+	
+	if(levelData != nullptr && charData != nullptr)
+	{
+		int32 maxValue = levelData->OwnTeamMaxCost;
+
+		int32 value = UsedBattleCost + charData->Cost;
+
+		if(value <= maxValue)
+			return true;
+	}
+	
+	return false;
 }
 
 bool UBSGameInstance::CheckGameLevelId(int32 gameLevelId)
@@ -63,6 +83,9 @@ void UBSGameInstance::PostGameLevelLoaded()
 		//배치 UI 노출
 		UUIManager::Get()->AddUI(TEXT("BattleBatchUI"),playerController);
 
+		//병력배치비용 다시 초기화
+		ClearBattleCost();
+		
 		//이전 필드 요소들 클리어
 		UGameFieldManager::Get(this)->ClearFieldComponents();
 		

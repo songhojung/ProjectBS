@@ -4,12 +4,17 @@
 #include "Manager/GameFieldManager.h"
 
 #include "GameDataManager.h"
+#include "UIManager.h"
 #include "BatchGrid/BatchGridActor.h"
 #include "CharacterProperty/TeamComponent.h"
 #include "Characters/SoldierBaseCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "GameMode/BSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spawn/SpawnArea.h"
+#include "UI/ToastPopupUI.h"
+
+class UToastPopupUI;
 
 UGameFieldManager::UGameFieldManager()
 {
@@ -147,6 +152,24 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 
 void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 {
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetWorld()->GetGameInstance());
+	if(gameIns == nullptr)
+		return;
+
+	//병력 배치비용 부족하면 리턴
+	if(gameIns->IsEnoughBattleCost(TargetBatchSoliderCharId)== false)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("!!!!!!!BattleCost Full => %i "), gameIns->GetUsedBattleCost());
+		
+		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+		UUIManager::Get()->AddPopupUI(TEXT("ToastPopupUI"),playerController,FCompletedAddUIDelegate::CreateLambda([&](UUserWidget* widget)
+		{
+			UToastPopupUI* toast = Cast<UToastPopupUI>(widget);
+				if(toast)
+					toast->ShowPopup(TEXT("The Cost has exceeded the limit"));
+		}));
+		return;
+	}
 	//배치해서  병력이 바라 볼 방향 
 	ASpawnArea* teamSpawnArea = GetTeamSpawnArea(teamType);
 	FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
@@ -165,6 +188,11 @@ void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 	// 그리드 인덱스 (그리드 칸 하나 마다 0부터 부여된 인덱스) 포함 안되었다면 포함하도록 ADD
 	if(OwnTeamBatchGridAssignedMap.Contains(gridIndex) ==false)
 		OwnTeamBatchGridAssignedMap.Add(gridIndex,true);
+
+	//배치비용추가
+	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(TargetBatchSoliderCharId);
+	if(charData!=nullptr)
+		gameIns->AddBattleCost(charData->Cost);
 }
 
 void UGameFieldManager::ChangeSampleBatchSoldier(int32 charId)

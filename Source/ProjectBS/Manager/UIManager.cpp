@@ -35,14 +35,24 @@ void UUIManager::AddUI(FString uiName, APlayerController* playerController,FComp
 		FString uiNameStr = FString::Printf(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/ProjectBS/UI/%s.%s_C'"), *uiName, *uiName);
 		TSubclassOf<UUserWidget> createdWidgetClass = LoadClass<UUserWidget>(nullptr, *uiNameStr);
 
-		UUserWidget* createdUI = CreateUI(createdWidgetClass,playerController);
+		UUserWidget* createdUI = CreateUI(createdWidgetClass,playerController,true);
 
 		completedCallback.ExecuteIfBound(createdUI);
 	}
 	
 }
 
-UUserWidget* UUIManager::CreateUI(TSubclassOf<UUserWidget> widgetClass, APlayerController* playerController)
+void UUIManager::AddPopupUI(FString uiName, APlayerController* playerController,FCompletedAddUIDelegate completedCallback)
+{
+	FString uiNameStr = FString::Printf(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/ProjectBS/UI/%s.%s_C'"), *uiName, *uiName);
+	TSubclassOf<UUserWidget> createdWidgetClass = LoadClass<UUserWidget>(nullptr, *uiNameStr);
+
+	UUserWidget* createdUI = CreateUI(createdWidgetClass,playerController,false);
+
+	completedCallback.ExecuteIfBound(createdUI);
+}
+
+UUserWidget* UUIManager::CreateUI(TSubclassOf<UUserWidget> widgetClass, APlayerController* playerController,bool isUI)
 {
 
 	UUserWidget* createdWidget = CreateWidget<UUserWidget>(playerController,widgetClass);
@@ -50,7 +60,8 @@ UUserWidget* UUIManager::CreateUI(TSubclassOf<UUserWidget> widgetClass, APlayerC
 	{
 		AddWidgetToViewport(createdWidget,playerController);
 
-		UIList.Add(createdWidget);
+		if(isUI)
+			UIList.Add(createdWidget);
 	}
 
 	return createdWidget;

@@ -32,9 +32,9 @@ public:
 public:
 
 	void AddUI(FString uiName,APlayerController* playerController, FCompletedAddUIDelegate completedCallback = nullptr);
-	
+	void AddPopupUI(FString uiName,APlayerController* playerController, FCompletedAddUIDelegate completedCallback = nullptr);
 
-	UUserWidget* CreateUI(TSubclassOf<UUserWidget> widgetClass,APlayerController* playerController);
+	UUserWidget* CreateUI(TSubclassOf<UUserWidget> widgetClass,APlayerController* playerController,bool isUI);
 
 	void RemoveUI(UUserWidget* userWidget);
 

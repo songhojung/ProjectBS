@@ -3,6 +3,7 @@
 
 #include "UI/TitleUI.h"
 
+#include "ToastPopupUI.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "GameMode/BSGameInstance.h"
@@ -26,8 +27,9 @@ void UTitleUI::StartButtonClicked()
 	{
 		gameIns->GameStart(gameIns->GetGameLevelId());
 	}
-
+	
 	UUIManager::Get()->RemoveUI(this);
+
 
 }
 
