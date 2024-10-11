@@ -6,6 +6,7 @@
 #include "ProjectBSGameMode.h"
 #include "TitleUI.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
 #include "GameMode/BSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -22,6 +23,12 @@ void UBattleBatchUI::NativeConstruct()
 
 	TextBox_Num->OnTextCommitted.AddDynamic(this,&UBattleBatchUI::TextBoxTextChanged);
 
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetWorld()->GetGameInstance()) ;
+	if(gameIns != nullptr)
+	{
+		gameIns->OnBattleCostChanged.AddUObject(this,&UBattleBatchUI::BattleCostChanged);
+	}
+		
 	TextBox_Num->SetText(FText::FromString(FString::FromInt(ForceCount)));
 
 
@@ -65,4 +72,10 @@ void UBattleBatchUI::BatchUnitItemClicked(int32 id)
 
 	UGameFieldManager::Get(this)->ChangeSampleBatchSoldier(id);
 	UGameFieldManager::Get(this)->SetTargetBatchSoliderCharId(id);
+}
+
+void UBattleBatchUI::BattleCostChanged(int32 currentCost, int32 maxCost)
+{
+	FString costStr = FString::Printf(TEXT("%d/%d"),currentCost,maxCost);
+	Text_BattleCost->SetText(FText::FromString(costStr));
 }

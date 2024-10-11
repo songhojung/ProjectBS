@@ -34,6 +34,15 @@ void UBSGameInstance::OnPostLoadMap(UWorld* loadedWorld)
 	PostGameLevelLoaded();
 }
 
+int32 UBSGameInstance::GetMaxBattleCost()
+{
+	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameLevelId);
+	if(levelData != nullptr )
+		return  levelData->OwnTeamMaxCost;
+
+	return 0;
+}
+
 bool UBSGameInstance::IsEnoughBattleCost( int charId)
 {
 	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameLevelId);
