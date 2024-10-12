@@ -95,7 +95,7 @@ bool UGameFieldManager::IsTickable() const
 
 
 
-void UGameFieldManager::StartBattleInField(int32 forceCount)
+void UGameFieldManager::StartBattleInField(int32 levelStageId)
 {
 
 	UE_LOG(LogTemp, Warning, TEXT("@@@@StartBattleInField"));
@@ -108,10 +108,19 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
 		if(SpawnArea!= nullptr && SpawnArea->GetTeamType() == ETeamType::EnemyTeam)
 		{
-			const FSoldierStatData* statData = UGameDataManager::Get()->GetSoldierStatData(1);
-			
-			for (int i = 0 ; i < forceCount; i++)
+			const FLevelStageData* stageData = UGameDataManager::Get()->GetLevelStageData(levelStageId);
+			check(stageData != nullptr);
+
+
+			for (int i = 0 ; i < stageData->EnemyTeamCharNum; i++)
 			{
+				int enemyCharId = stageData->EnemyTeamBatchCharIds[i];
+
+				const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(enemyCharId);
+				check(charData != nullptr);
+				const FSoldierStatData* statData = UGameDataManager::Get()->GetSoldierStatData(charData->StatId);
+				check(statData != nullptr);
+				
 				int row = i / 10;
 				int column = i % 10;
 				FVector SpawnLocation = SpawnArea->GetActorLocation() + FVector(row * 100, column * 100, 0); 

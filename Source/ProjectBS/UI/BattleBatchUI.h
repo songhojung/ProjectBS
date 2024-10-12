@@ -29,7 +29,7 @@ protected:
 	class UButton* Button_Start;
 
 	UPROPERTY(meta = (BindWidget))
-	class UEditableTextBox* TextBox_Num;
+	class UTextBlock* Text_NextEnemies;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Text_BattleCost;

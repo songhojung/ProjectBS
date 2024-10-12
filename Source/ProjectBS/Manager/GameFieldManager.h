@@ -61,7 +61,7 @@ public:
 	void CreateBatchGridActor();
 
 public:
-	void StartBattleInField(int32 forceCount);
+	void StartBattleInField(int32 levelStageId);
 
 	void BatchSoldier(FVector location,  ETeamType teamType);
 

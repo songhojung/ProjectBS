@@ -21,7 +21,7 @@ void UBattleBatchUI::NativeConstruct()
 
 	Button_Start->OnClicked.AddDynamic(this, &UBattleBatchUI::StartButtonClicked);
 
-	TextBox_Num->OnTextCommitted.AddDynamic(this,&UBattleBatchUI::TextBoxTextChanged);
+	// TextBox_Num->OnTextCommitted.AddDynamic(this,&UBattleBatchUI::TextBoxTextChanged);
 
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetWorld()->GetGameInstance()) ;
 	if(gameIns != nullptr)
@@ -29,7 +29,7 @@ void UBattleBatchUI::NativeConstruct()
 		gameIns->OnBattleCostChanged.AddUObject(this,&UBattleBatchUI::BattleCostChanged);
 	}
 		
-	TextBox_Num->SetText(FText::FromString(FString::FromInt(ForceCount)));
+	// TextBox_Num->SetText(FText::FromString(FString::FromInt(ForceCount)));
 
 
 	UUniformGridPanel* uniformGridPanel = Cast<UUniformGridPanel>(SoldierUnitGridPanel);
@@ -46,6 +46,26 @@ void UBattleBatchUI::NativeConstruct()
 		uniformGridPanel->AddChildToUniformGrid(newSlot,row,colum);
 	}
 
+	//현재 스테이지에 적병력정보
+	if(gameIns)
+	{
+		TTuple<TArray<FString>,TArray<int32>> enemiesNumData = UGameDataManager::Get()->GetSoldierNumsInfoInLevelStage(gameIns->GetGameLevelId());
+
+		TArray<FString> names = enemiesNumData.Get<0>();
+		TArray<int32> nums = enemiesNumData.Get<1>();
+
+		FString str;
+		
+		for (int i = 0; i < names.Num(); ++i)
+		{
+			str.Appendf(TEXT("%s %d"),*names[i],nums[i]);
+			str.Append(TEXT(" "));
+		}
+
+		Text_NextEnemies->SetText(FText::FromString(str));
+	}
+
+	
 }
 
 void UBattleBatchUI::StartButtonClicked()

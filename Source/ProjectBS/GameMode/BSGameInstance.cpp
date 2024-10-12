@@ -114,7 +114,7 @@ void UBSGameInstance::BattleStart(int32 count)
 	
 	// 게임필드 에 필드에 병력, 오브젝트 등 로드.
 	UGameFieldManager* gfm = UGameFieldManager::Get(this);
-	gfm->StartBattleInField(count);
+	gfm->StartBattleInField(GameLevelId);
 
 	//배치 그리드 비활성
 	if(gfm->GetBatchGrid())
