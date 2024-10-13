@@ -7,6 +7,7 @@
 #include "CharacterProperty/TeamComponent.h"
 #include "BSGameInstance.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FBattleCostChanged, int32, int32);
 /**
  * 
  */
@@ -31,13 +32,28 @@ public:
 	
 	int32 GameLevelId;
 
+	int32 UsedBattleCost;
+	
+	uint8 bBattleStarted : 1;
 	uint8 bBattleEnd : 1;
 
 	ETeamType BattleWinTeam;
+
+	FBattleCostChanged OnBattleCostChanged;
+	
 public:
 	FORCEINLINE void SetGameStartedFlag(uint8 _bGameStarted) { bGameStarted = _bGameStarted; }
 	FORCEINLINE bool IsGameStarted() const { return bGameStarted; }
+	FORCEINLINE bool IsBattleStarted() const { return bBattleStarted; }
+	
 	FORCEINLINE int32 GetGameLevelId() {return GameLevelId;}
+	
+	FORCEINLINE int32 GetUsedBattleCost() {return UsedBattleCost;}
+	FORCEINLINE void AddBattleCost(int32 addValue) {UsedBattleCost += addValue; OnBattleCostChanged.Broadcast(UsedBattleCost , GetMaxBattleCost());}
+	FORCEINLINE void RemoveBattleCost(int32 removeValue) {UsedBattleCost = FMath::Clamp(UsedBattleCost - removeValue, 0, UsedBattleCost); OnBattleCostChanged.Broadcast(UsedBattleCost,GetMaxBattleCost());}
+	int32 GetMaxBattleCost();
+	void ClearBattleCost() {UsedBattleCost = 0;}
+	bool IsEnoughBattleCost( int charId);
 	
 public:
 	void SetGameLevelId(int32 newGameLevelId) {GameLevelId = newGameLevelId;} 

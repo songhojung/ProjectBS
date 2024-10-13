@@ -15,7 +15,10 @@ class UBattleEndUI;
 UBSGameInstance::UBSGameInstance()
 {
 	bGameStarted = false;
-	
+	bBattleStarted = false;
+	bBattleEnd = false;
+
+	ClearBattleCost();
 	SetGameLevelId(1);
 }
 
@@ -29,6 +32,34 @@ void UBSGameInstance::OnPostLoadMap(UWorld* loadedWorld)
 {
 	//게임레벨 로드음 해당레벨의 이후 처리진행
 	PostGameLevelLoaded();
+}
+
+int32 UBSGameInstance::GetMaxBattleCost()
+{
+	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameLevelId);
+	if(levelData != nullptr )
+		return  levelData->OwnTeamMaxCost;
+
+	return 0;
+}
+
+bool UBSGameInstance::IsEnoughBattleCost( int charId)
+{
+	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameLevelId);
+
+	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(charId);
+	
+	if(levelData != nullptr && charData != nullptr)
+	{
+		int32 maxValue = levelData->OwnTeamMaxCost;
+
+		int32 value = UsedBattleCost + charData->Cost;
+
+		if(value <= maxValue)
+			return true;
+	}
+	
+	return false;
 }
 
 bool UBSGameInstance::CheckGameLevelId(int32 gameLevelId)
@@ -61,18 +92,29 @@ void UBSGameInstance::PostGameLevelLoaded()
 		//배치 UI 노출
 		UUIManager::Get()->AddUI(TEXT("BattleBatchUI"),playerController);
 
+		//병력배치비용 다시 초기화
+		ClearBattleCost();
+		
+		//이전 필드 요소들 클리어
+		UGameFieldManager::Get(this)->ClearFieldComponents();
+		
 		//필드에 배치 grid actor 생성
 		UGameFieldManager::Get(this)->CreateBatchGridActor();
 	}
+
+	bBattleStarted = false;
 }
 
 void UBSGameInstance::BattleStart(int32 count)
 {
 	bBattleEnd = false;
+
+	bBattleStarted = true;
+ 
 	
 	// 게임필드 에 필드에 병력, 오브젝트 등 로드.
 	UGameFieldManager* gfm = UGameFieldManager::Get(this);
-	gfm->StartBattleInField(count);
+	gfm->StartBattleInField(GameLevelId);
 
 	//배치 그리드 비활성
 	if(gfm->GetBatchGrid())

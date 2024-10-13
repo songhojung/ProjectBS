@@ -109,6 +109,10 @@ void AProjectBSPlayerController::OnSetDestinationTriggered()
 
 void AProjectBSPlayerController::OnSetDestinationReleased()
 {
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	if(gameIns != nullptr && gameIns->IsBattleStarted())
+		return;
+
 	FHitResult Hit;
 	bool bHitSuccessful = false;
 	if (bIsTouch)

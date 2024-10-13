@@ -15,6 +15,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Char")
 	int StatId;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Char")
+	int Cost;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Char")
 	FString UnitName;  

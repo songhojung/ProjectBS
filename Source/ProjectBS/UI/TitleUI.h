@@ -24,7 +24,7 @@ protected:
 	int32 ForceCount = 1; //병력 숫자
 	
 protected:
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* Btn_Start;
 
 	UFUNCTION()

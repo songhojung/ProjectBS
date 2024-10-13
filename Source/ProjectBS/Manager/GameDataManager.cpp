@@ -104,3 +104,36 @@ const FLevelStageData* UGameDataManager::GetLevelStageData(int id)
 	else
 		return nullptr;
 }
+
+//특정스테이지의 적병력의 병력이름과 숫자반환
+TTuple<TArray<FString>,TArray<int32>> UGameDataManager::	GetSoldierNumsInfoInLevelStage(int levelStageId)
+{
+	TArray<FString> names;
+	TArray<int32> nums;
+	
+	const FLevelStageData* levelData = GetLevelStageData(levelStageId);
+	check(levelData != nullptr);
+
+	for (int i = 0; i < levelData->EnemyTeamCharNum; ++i)
+	{
+		const FSoldierCharData* charData = GetSoldierCharData(levelData->EnemyTeamBatchCharIds[i]);
+		check(charData != nullptr);
+
+		if(names.Contains(charData->UnitName)==false)
+			names.Add(charData->UnitName);
+
+		int32 index =  names.IndexOfByKey(charData->UnitName);
+
+		if(index > nums.Num())
+		{
+			nums[index] ++;
+
+		}
+		else
+		{
+			nums.Add(1);
+		}
+	}
+
+	return MakeTuple(names,nums);
+}

@@ -16,14 +16,6 @@ class PROJECTBS_API UBattleBatchUI : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
-
-	UFUNCTION()
-	void StartButtonClicked();
-
-	UFUNCTION()
-	void TextBoxTextChanged(const FText& Text, ETextCommit::Type CommitMethod);
-
-	void BatchUnitItemClicked(int32 id);
 	
 		
 protected:
@@ -37,9 +29,22 @@ protected:
 	class UButton* Button_Start;
 
 	UPROPERTY(meta = (BindWidget))
-	class UEditableTextBox* TextBox_Num;
+	class UTextBlock* Text_NextEnemies;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Text_BattleCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Slot")
 	TSubclassOf<class UBatchUnitItemSlot> SoldierUnitGridSlotWidgetClass;
-	
+
+public:
+	UFUNCTION()
+	void StartButtonClicked();
+
+	UFUNCTION()
+	void TextBoxTextChanged(const FText& Text, ETextCommit::Type CommitMethod);
+
+	void BatchUnitItemClicked(int32 id);
+
+	void BattleCostChanged(int32 currentCost, int32 maxCost);
 };

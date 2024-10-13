@@ -31,6 +31,9 @@ public:
 	const FSoldierCharData* GetSoldierCharData(int id);
 	const FLevelStageData* GetLevelStageData(int id);
 
+	//특정스테이지의 적병력의 병력이름과 숫자반환
+	TTuple<TArray<FString>,TArray<int32>> GetSoldierNumsInfoInLevelStage(int levelStageId);
+
 private:
 	TArray<FSoldierStatData> SoldierStatTables;
 	TArray<FSoldierCharData> SoldierCharTables;

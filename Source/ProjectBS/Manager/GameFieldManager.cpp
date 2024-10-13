@@ -4,12 +4,17 @@
 #include "Manager/GameFieldManager.h"
 
 #include "GameDataManager.h"
+#include "UIManager.h"
 #include "BatchGrid/BatchGridActor.h"
 #include "CharacterProperty/TeamComponent.h"
 #include "Characters/SoldierBaseCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "GameMode/BSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spawn/SpawnArea.h"
+#include "UI/ToastPopupUI.h"
+
+class UToastPopupUI;
 
 UGameFieldManager::UGameFieldManager()
 {
@@ -66,7 +71,6 @@ void UGameFieldManager::OnWorldBeginPlay()
 
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
-	CanTick = true;
 
 }
 
@@ -91,7 +95,7 @@ bool UGameFieldManager::IsTickable() const
 
 
 
-void UGameFieldManager::StartBattleInField(int32 forceCount)
+void UGameFieldManager::StartBattleInField(int32 levelStageId)
 {
 
 	UE_LOG(LogTemp, Warning, TEXT("@@@@StartBattleInField"));
@@ -104,10 +108,19 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		ASpawnArea* SpawnArea = Cast<ASpawnArea>(actor);
 		if(SpawnArea!= nullptr && SpawnArea->GetTeamType() == ETeamType::EnemyTeam)
 		{
-			const FSoldierStatData* statData = UGameDataManager::Get()->GetSoldierStatData(1);
-			
-			for (int i = 0 ; i < forceCount; i++)
+			const FLevelStageData* stageData = UGameDataManager::Get()->GetLevelStageData(levelStageId);
+			check(stageData != nullptr);
+
+
+			for (int i = 0 ; i < stageData->EnemyTeamCharNum; i++)
 			{
+				int enemyCharId = stageData->EnemyTeamBatchCharIds[i];
+
+				const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(enemyCharId);
+				check(charData != nullptr);
+				const FSoldierStatData* statData = UGameDataManager::Get()->GetSoldierStatData(charData->StatId);
+				check(statData != nullptr);
+				
 				int row = i / 10;
 				int column = i % 10;
 				FVector SpawnLocation = SpawnArea->GetActorLocation() + FVector(row * 100, column * 100, 0); 
@@ -137,23 +150,35 @@ void UGameFieldManager::StartBattleInField(int32 forceCount)
 		soldier->GetAIController()->StartAI();
 	}
 
-	//배치 병사 안보이게
+	//배치 병사 바로 파괴
 	if(BatchGridSampleSoldier!=nullptr)
-		BatchGridSampleSoldier->SetActorHiddenInGame(true);
+		DestroySampleBatchSoldier();
 
 	//TICK 처리 안하게
 	CanTick = false;
 
-	//배틀 시작 플레그 on
-	HasStartedBattle = true;
 }
 
 void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 {
-	//배틀 시작되면 병력 배치 안됨 무시처리
-	if(HasStartedBattle)
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetWorld()->GetGameInstance());
+	if(gameIns == nullptr)
 		return;
 
+	//병력 배치비용 부족하면 리턴
+	if(gameIns->IsEnoughBattleCost(TargetBatchSoliderCharId)== false)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("!!!!!!!BattleCost Full => %i "), gameIns->GetUsedBattleCost());
+		
+		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+		UUIManager::Get()->AddPopupUI(TEXT("ToastPopupUI"),playerController,FCompletedAddUIDelegate::CreateLambda([&](UUserWidget* widget)
+		{
+			UToastPopupUI* toast = Cast<UToastPopupUI>(widget);
+				if(toast)
+					toast->ShowPopup(TEXT("The Cost has exceeded the limit"));
+		}));
+		return;
+	}
 	//배치해서  병력이 바라 볼 방향 
 	ASpawnArea* teamSpawnArea = GetTeamSpawnArea(teamType);
 	FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
@@ -172,6 +197,11 @@ void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 	// 그리드 인덱스 (그리드 칸 하나 마다 0부터 부여된 인덱스) 포함 안되었다면 포함하도록 ADD
 	if(OwnTeamBatchGridAssignedMap.Contains(gridIndex) ==false)
 		OwnTeamBatchGridAssignedMap.Add(gridIndex,true);
+
+	//배치비용추가
+	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(TargetBatchSoliderCharId);
+	if(charData!=nullptr)
+		gameIns->AddBattleCost(charData->Cost);
 }
 
 void UGameFieldManager::ChangeSampleBatchSoldier(int32 charId)
@@ -193,7 +223,23 @@ void UGameFieldManager::ChangeSampleBatchSoldier(int32 charId)
 	BatchGridSampleSoldier->SetActorEnableCollision(false);
 }
 
+void UGameFieldManager::DestroySampleBatchSoldier()
+{
+	if(BatchGridSampleSoldier!=nullptr)
+	{
+		BatchGridSampleSoldier->Destroy();
+		BatchGridSampleSoldier = nullptr;
+	}
+}
 
+void UGameFieldManager::ClearFieldComponents()
+{
+	OwnSoldierArray.Empty();
+	OtherSoldierArray.Empty();
+
+	OwnTeamBatchGridAssignedMap.Empty();
+	SpawnAreaArray.Empty();
+}
 
 
 ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType)
@@ -237,6 +283,10 @@ void UGameFieldManager::CreateBatchGridActor()
 	{
 		BatchGrid->SetActiveBatchGrid(true);
 	}
+
+	//그리드위 plane 체크 되도록 플레그 true 변경 
+	CanTick = true;
+
 }
 
 void UGameFieldManager::TrackMouseOnPlane()
