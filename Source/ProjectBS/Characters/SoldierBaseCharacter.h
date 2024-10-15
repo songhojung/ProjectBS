@@ -53,10 +53,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	TObjectPtr<class USkeletalMeshComponent> MeshComponent;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Animation)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
 	TObjectPtr<class UAnimMontage> AttackMontage;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Animation)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
 	TObjectPtr<class UAnimMontage> DeadMontage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Team)
