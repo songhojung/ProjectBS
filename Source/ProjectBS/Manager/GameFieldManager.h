@@ -26,6 +26,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual bool IsTickable() const override;
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UGameFieldManager, STATGROUP_Tickables); }
+
+protected:
+	const float DISTANCE_MIN_BATCH = 700.f;
 	
 protected:
 
@@ -53,11 +56,15 @@ protected:
 	
 protected:
 	void OnWorldBeginPlay();
-	void TrackMouseOnPlane();
+	//선택한 임시 병사 배치그리드 위에  마우스 포인터 트랙킹 처리 (legacy)
+	void TrackSampleSoldierMouseOnBatchGrid();
+	//선택한 임시 병사 땅 위에  마우스 포인터 트랙킹 처리
+	void TrackSampleSoldierMouseOnGround();
 	UClass* LoadCharacterClass(int charTableId);
 	UClass* LoadBatchGridClass();
 	ASoldierBaseCharacter* CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType);
 public:
+	void SetSpawnAreas();
 	void CreateBatchGridActor();
 
 public:

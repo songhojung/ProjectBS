@@ -26,6 +26,8 @@ protected:
 
 	UPROPERTY(visibleAnywhere)
 	TMap<ETeamType,int32> UnitsByTeamMap;
+	uint8 bNeedLevelLoadedProcess : 1;
+
 	
 public:
 	uint8 bGameStarted : 1;

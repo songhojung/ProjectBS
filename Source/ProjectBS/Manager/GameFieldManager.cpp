@@ -58,6 +58,15 @@ void UGameFieldManager::Initialize(FSubsystemCollectionBase& Collection)
 
 void UGameFieldManager::OnWorldBeginPlay()
 {
+	SetSpawnAreas();
+
+	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+
+}
+
+void UGameFieldManager::SetSpawnAreas()
+{
 	TArray<AActor*> actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), actors);
 
@@ -68,15 +77,12 @@ void UGameFieldManager::OnWorldBeginPlay()
 		if(spawnArea)
 			SpawnAreaArray.Add(spawnArea);
 	}
-
-	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-
 }
 
 void UGameFieldManager::Tick(float DeltaTime)
 {
-	TrackMouseOnPlane();
+	// TrackSampleSoldierMouseOnBatchGrid();
+	TrackSampleSoldierMouseOnGround();
 }
 
 bool UGameFieldManager::IsTickable() const
@@ -179,8 +185,25 @@ void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 		}));
 		return;
 	}
-	//배치해서  병력이 바라 볼 방향 
+	
 	ASpawnArea* teamSpawnArea = GetTeamSpawnArea(teamType);
+
+	FVector spawnLocation = teamSpawnArea->GetActorLocation();
+	float distanceWithSpawnArea= FVector::Distance(FVector(location.X,location.Y,0.f),FVector(spawnLocation.X,spawnLocation.Y,0.f));
+	//제한 거리보다 너무 멀면 배치 불가
+	if(distanceWithSpawnArea > DISTANCE_MIN_BATCH)
+	{
+		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+		UUIManager::Get()->AddPopupUI(TEXT("ToastPopupUI"),playerController,FCompletedAddUIDelegate::CreateLambda([&](UUserWidget* widget)
+		{
+			UToastPopupUI* toast = Cast<UToastPopupUI>(widget);
+				if(toast)
+					toast->ShowPopup(TEXT("Can't batch at this location, the distance is too far."));
+		}));
+		return;
+	}
+
+	//배치해서  병력이 바라 볼 방향 
 	FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
 	
 	ASoldierBaseCharacter* soldier = CreateSoldier(TargetBatchSoliderCharId, location, teamRotation, teamType);
@@ -188,15 +211,15 @@ void UGameFieldManager::BatchSoldier(FVector location, ETeamType teamType)
 	//생성된 병사 컨테이너에 ADD
 	OwnSoldierArray.Add(soldier);
 
-	int32 row;
-	int32 col;
-	BatchGrid->LocationToTile(location,row,col);
-	//해당 열, 행에 대한 그리드 인덱스 반환
-	int32 gridIndex = BatchGrid->GetGridIndex(row,col); 
-
-	// 그리드 인덱스 (그리드 칸 하나 마다 0부터 부여된 인덱스) 포함 안되었다면 포함하도록 ADD
-	if(OwnTeamBatchGridAssignedMap.Contains(gridIndex) ==false)
-		OwnTeamBatchGridAssignedMap.Add(gridIndex,true);
+	// int32 row;
+	// int32 col;
+	// BatchGrid->LocationToTile(location,row,col);
+	// //해당 열, 행에 대한 그리드 인덱스 반환
+	// int32 gridIndex = BatchGrid->GetGridIndex(row,col); 
+	//
+	// // 그리드 인덱스 (그리드 칸 하나 마다 0부터 부여된 인덱스) 포함 안되었다면 포함하도록 ADD
+	// if(OwnTeamBatchGridAssignedMap.Contains(gridIndex) ==false)
+	// 	OwnTeamBatchGridAssignedMap.Add(gridIndex,true);
 
 	//배치비용추가
 	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(TargetBatchSoliderCharId);
@@ -289,7 +312,7 @@ void UGameFieldManager::CreateBatchGridActor()
 
 }
 
-void UGameFieldManager::TrackMouseOnPlane()
+void UGameFieldManager::TrackSampleSoldierMouseOnBatchGrid()
 {
 	// APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
@@ -354,6 +377,60 @@ void UGameFieldManager::TrackMouseOnPlane()
 			}
 			
 			// UE_LOG(LogTemp, Warning, TEXT("@@@@TeamSpawn Completed : %s / x: %.2f , y : %.2f, z : %.2f"), *Hit.GetActor()->GetName(), Hit.GetActor()->GetActorLocation().X, Hit.GetActor()->GetActorLocation().Y, Hit.GetActor()->GetActorLocation().Z );
+		}
+	}
+}
+
+void UGameFieldManager::TrackSampleSoldierMouseOnGround()
+{
+
+	if(PlayerController == nullptr)
+		PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	
+	FHitResult Hit;
+	if(PlayerController.IsValid()&& PlayerController.Get()->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit))
+	{
+
+		ASpawnArea* ownSpawnArea = GetTeamSpawnArea(ETeamType::OwnTeam);
+
+		float distanceWithSpawnArea = 0.f;
+		
+		if(ownSpawnArea!=nullptr)
+		{
+			FVector spawnLocation = ownSpawnArea->GetActorLocation();
+			distanceWithSpawnArea= FVector::Distance(FVector(Hit.Location.X,Hit.Location.Y,0.f),FVector(spawnLocation.X,spawnLocation.Y,0.f));
+			UE_LOG(LogTemp, Warning, TEXT("####distanceWithSpawnArea : %f"), distanceWithSpawnArea);
+		}
+
+		
+		if(BatchGridSampleSoldier == nullptr)
+		{
+			//배치해서  병력이 바라 볼 방향 
+			ASpawnArea* teamSpawnArea = GetTeamSpawnArea(ETeamType::OwnTeam);
+			FRotator teamRotation = teamSpawnArea !=nullptr ? teamSpawnArea->GetActorRotation() : FRotator(0.f,0.f,0.f);
+			//병사 오브젝트 로드해서 위치시킨다
+			BatchGridSampleSoldier = CreateSoldier(TargetBatchSoliderCharId,FVector(Hit.Location.X,Hit.Location.Y,0.f),teamRotation,ETeamType::OwnTeam);
+			BatchGridSampleSoldier->SetActorEnableCollision(false);
+		
+		
+		}
+		else
+		{
+			if(distanceWithSpawnArea <= DISTANCE_MIN_BATCH)
+			{
+				float height = BatchGridSampleSoldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+				BatchGridSampleSoldier->SetActorHiddenInGame(false);
+				BatchGridSampleSoldier->SetActorEnableCollision(false);
+				BatchGridSampleSoldier->SetActorLocation(FVector(Hit.Location.X, Hit.Location.Y, height));
+			}
+			else
+			{
+				//거리가 너무 멀었을때 배치 불가 배치 샘플 색변화
+
+				//우선임시로 배치샘플 안보이게 함
+				BatchGridSampleSoldier->SetActorHiddenInGame(true);
+			}
+		
 		}
 	}
 }

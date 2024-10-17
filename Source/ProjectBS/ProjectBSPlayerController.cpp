@@ -48,13 +48,19 @@ void AProjectBSPlayerController::BeginPlay()
 
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
 
-	if(gameIns && gameIns->IsGameStarted() ==false)
+	if(gameIns)
 	{
-		//타이틀 UI 노출
-		UUIManager::Get()->AddUI(TEXT("TitleUI"),this);
+		//레벨 로드시 로드 완료 콜백호출
+		gameIns->PostGameLevelLoaded();
+		
+		if(gameIns->IsGameStarted() ==false)
+		{
+			//타이틀 UI 노출
+			UUIManager::Get()->AddUI(TEXT("TitleUI"),this);
 
-		//게임 시작 플레그 설정
-		gameIns->SetGameStartedFlag(true);
+			//게임 시작 플레그 설정
+			gameIns->SetGameStartedFlag(true);
+		}
 	}
 }
 
@@ -140,8 +146,12 @@ void AProjectBSPlayerController::OnSetDestinationReleased()
 
 			int32 gridIndex = grid->GetGridIndex(row,col);
 
+			// if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
+			// 	UGameFieldManager::Get(this)->BatchSoldier(FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
+
 			if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
-				UGameFieldManager::Get(this)->BatchSoldier(FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
+				UGameFieldManager::Get(this)->BatchSoldier(FVector(Hit.Location.X,Hit.Location.Y,0.f), ETeamType::OwnTeam);
+
 		}
 	}
 	else

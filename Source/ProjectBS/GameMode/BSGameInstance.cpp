@@ -14,6 +14,8 @@ class UBattleEndUI;
 
 UBSGameInstance::UBSGameInstance()
 {
+	bNeedLevelLoadedProcess = false;
+	
 	bGameStarted = false;
 	bBattleStarted = false;
 	bBattleEnd = false;
@@ -74,16 +76,25 @@ void UBSGameInstance::GameStart(int32 gameLevelId)
 	//레벨에 맞는 레벨로드
 	bool isChangedGameLevel = false;
 	LoadLevel(gameLevelId , isChangedGameLevel);
+
+	bNeedLevelLoadedProcess = true;
 	
-	if(isChangedGameLevel == false)
-	{
-		PostGameLevelLoaded();
-	}
+	// if(isChangedGameLevel == false)
+	// {
+	// 	UWorld* world = GetWorld();
+	// 	
+	// 	PostGameLevelLoaded();
+	// }
 	
 }
 
 void UBSGameInstance::PostGameLevelLoaded()
 {
+	if(bNeedLevelLoadedProcess == false)
+		return;
+
+
+	
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 
 	if(playerController)
@@ -98,11 +109,16 @@ void UBSGameInstance::PostGameLevelLoaded()
 		//이전 필드 요소들 클리어
 		UGameFieldManager::Get(this)->ClearFieldComponents();
 		
+		UGameFieldManager::Get(this)->SetSpawnAreas();
+		
+		
 		//필드에 배치 grid actor 생성
 		UGameFieldManager::Get(this)->CreateBatchGridActor();
 	}
 
 	bBattleStarted = false;
+
+	bNeedLevelLoadedProcess = false;
 }
 
 void UBSGameInstance::BattleStart(int32 count)
