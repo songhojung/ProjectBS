@@ -1,4 +1,4 @@
-ID,Name,StageGroup
+﻿ID,Name,StageGroup
 0,Lobby,"(-1,0)"
 1,Forest,"(11,12,13,14,15)"
 2,Desort,"(21,22,23,24,25)"

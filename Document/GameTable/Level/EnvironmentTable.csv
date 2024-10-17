@@ -1,4 +1,4 @@
-ID,Name,EvnSize,AddMoveSpeedValue,AddAttackSpeedValue
+﻿ID,Name,EvnSize,AddMoveSpeedValue,AddAttackSpeedValue
 0,default,0,0,0
 1,ice,100,0.5,0
 2,swamp,100,-0.3,-0.3

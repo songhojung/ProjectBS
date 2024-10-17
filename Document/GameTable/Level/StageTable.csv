@@ -1,4 +1,4 @@
-ID,Name,OwnTeamMaxCost,OwnTeamBatchSize,EnemyTeamBatchSize,EnemyTeamCharNum,EnemyTeamBatchCharlds,EnemyTeamBatchPositions
+﻿ID,Name,OwnTeamMaxCost,OwnTeamBatchSize,EnemyTeamBatchSize,EnemyTeamCharNum,EnemyTeamBatchCharlds,EnemyTeamBatchPositions
 -1,Test_stage,100000,1,1,2,"(1,1)","(1,2)"
 0,Lobby_stage,0,,,0,(),()
 11,Forest_Camp1,2000,,,5,"(1,1,1,1,1)","(1,2,3,4,5)"
