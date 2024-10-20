@@ -130,12 +130,14 @@ void UGameFieldManager::StartBattleInField(int32 levelStageId)
 				int row = i / 10;
 				int column = i % 10;
 				FVector SpawnLocation = SpawnArea->GetActorLocation() + FVector(row * 100, column * 100, 0); 
-				ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
-				soldier->SetTeam(SpawnArea->GetTeamType());
-				soldier->SetStat(*statData);
+				// ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
+				// soldier->SetTeam(SpawnArea->GetTeamType());
+				// soldier->SetStat(*statData);
+				//
+				// UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
 
-				UGameplayStatics::FinishSpawningActor(soldier,FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
-
+				ASoldierBaseCharacter* soldier = CreateSoldier(charData->Id,SpawnLocation,SpawnArea->GetActorRotation(),ETeamType::EnemyTeam);
+				
 				//AI 시작
 				soldier->GetAIController()->StartAI();
 
@@ -497,5 +499,13 @@ TArray<ASoldierBaseCharacter*> UGameFieldManager::GetTeamSoldierArray(ETeamType 
 	else
 	{
 		return  OtherSoldierArray;	
+	}
+}
+
+void UGameFieldManager::GetActorForceOwnTeamTestCode()
+{
+	for (auto Element : OwnSoldierArray)
+	{
+		Element->ForceFront();
 	}
 }

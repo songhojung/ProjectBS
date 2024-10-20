@@ -34,6 +34,13 @@ AProjectBSPlayerController::AProjectBSPlayerController()
 	{
 		SetDestinationClickAction = clickInputActionRef.Object;
 	}
+
+	//Test
+	static ConstructorHelpers::FObjectFinder<UInputAction> testActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ProjectBS/Input/Action/IA_TestInput.IA_TestInput'"));
+	if(testActionRef.Object)
+	{
+		TestKeyAction = testActionRef.Object;
+	}
 	
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -89,6 +96,10 @@ void AProjectBSPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AProjectBSPlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AProjectBSPlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AProjectBSPlayerController::OnTouchReleased);
+
+		
+		EnhancedInputComponent->BindAction(TestKeyAction, ETriggerEvent::Triggered, this, &AProjectBSPlayerController::OnTestInputTriggered);
+
 	}
 	else
 	{
@@ -171,6 +182,11 @@ void AProjectBSPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+void AProjectBSPlayerController::OnTestInputTriggered()
+{
+	UGameFieldManager::Get(this)->GetActorForceOwnTeamTestCode();
 }
 
 

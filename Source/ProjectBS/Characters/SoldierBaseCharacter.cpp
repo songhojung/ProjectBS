@@ -6,6 +6,7 @@
 #include "AI/SoldierAIController.h"
 #include "CharacterProperty/SoldierStatComponent.h"
 #include "CharacterProperty/TeamComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -47,11 +48,15 @@ void ASoldierBaseCharacter::BeginPlay()
 
 	MeshComponent = GetMesh();
 
+	HitPointStart = Cast<USceneComponent>(GetDefaultSubobjectByName(TEXT("HitTraceStart")));
+	
+	HitPointEnd = Cast<USceneComponent>(GetDefaultSubobjectByName(TEXT("HitTraceEnd")));
+
 	StatComponent->FOnDeadEvent.BindUObject(this, &ASoldierBaseCharacter::SetDead);
 
-	// PhysicalAnimation->SetSkeletalMeshComponent(MeshComponent);
-	//
-	// // FPhysicalAnimationData 초기화
+	PhysicalAnimation->SetSkeletalMeshComponent(MeshComponent);
+	
+	// FPhysicalAnimationData 초기화
 	// FPhysicalAnimationData PhysicalAnimationData;
 	// PhysicalAnimationData.bIsLocalSimulation = true;       // 로컬 시뮬레이션 사용 여부
 	// PhysicalAnimationData.OrientationStrength = 1000.0f;    // 회전 제어 강도
@@ -60,10 +65,17 @@ void ASoldierBaseCharacter::BeginPlay()
 	// PhysicalAnimationData.AngularVelocityStrength = 100.0f; // 각속도 제어 강도
 	// PhysicalAnimationData.MaxLinearForce = 0.0f;        // 최대 선형 힘
 	// PhysicalAnimationData.MaxAngularForce = 0.0f;       // 최대 각력
-	// PhysicalAnimation->ApplyPhysicalAnimationSettingsBelow( TEXT("Pelvis") ,PhysicalAnimationData);
+
+	////기본캐릭
+	// PhysicalAnimation->ApplyPhysicalAnimationSettingsBelow( TEXT("pelvis") ,PhysicalAnimationData);
 	//
-	// MeshComponent->SetAllBodiesBelowSimulatePhysics(TEXT("Pelvis"),true,false);
-	
+	// MeshComponent->SetAllBodiesBelowSimulatePhysics(TEXT("pelvis"),true,false);
+
+	////강아지캐릭 셋팅
+	// PhysicalAnimation->ApplyPhysicalAnimationSettingsBelow( TEXT("spine_001") ,PhysicalAnimationData);
+	//
+	// MeshComponent->SetAllBodiesBelowSimulatePhysics(TEXT("spine_001"),true,false);
+
 
 }
 
@@ -127,25 +139,36 @@ void ASoldierBaseCharacter::AttackHitCheck()
 	FCollisionQueryParams params(SCENE_QUERY_STAT(Attack), false, this);
 	float attackRange = 20.f;
 	float attackRadius = 30.f;
-	FVector start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
-	FVector end  =start + GetActorForwardVector() * attackRange;
+	// FVector start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
+	// FVector end  =start + GetActorForwardVector() * attackRange;
+	FVector start = HitPointStart->GetComponentLocation();
+	FVector end = HitPointEnd->GetComponentLocation();
+	FVector SweepDirection = (end - start).GetSafeNormal();
+	float CapsuleHalfHeight = FVector::Distance(start,end);
+
 	
-	bool hitDetected = GetWorld()->SweepSingleByChannel(outHitResult,start,end,FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel1, FCollisionShape::MakeSphere(attackRadius),params);
+	bool hitDetected = GetWorld()->SweepSingleByChannel(outHitResult,start,end,FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel1, FCollisionShape::MakeCapsule(attackRadius,CapsuleHalfHeight),params);
 	if(hitDetected)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("hitDetected : %s"), *outHitResult.GetActor()->GetName() );
 
 		FDamageEvent damageEvent;
-		outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
+		// outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
 	}
 
 #if ENABLE_DRAW_DEBUG
-	FVector capsuleOrigin = start + (end - start) * 0.5f;
+	// FVector capsuleOrigin = start + (end - start) * 0.5f;
+	FVector capsuleOrigin = ( start + end )/ 2;
 	float capsuleHalfHeight = attackRange * 0.5f;
 	FColor drawColor = hitDetected ? FColor::Green : FColor::Red;
 
-	DrawDebugCapsule(GetWorld(), capsuleOrigin, capsuleHalfHeight, attackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), drawColor,false, 3.0f);
+	FRotator RotatorFromX = FRotationMatrix::MakeFromZ(SweepDirection).Rotator();
+	FQuat RotationQuat = RotatorFromX.Quaternion();
+	
+	DrawDebugCapsule(GetWorld(), capsuleOrigin, CapsuleHalfHeight, attackRange, RotationQuat, drawColor,false, 3.0f);
+	// DrawDebugSphere(GetWorld(), End, SphereRadius, 24, bHit ? FColor::Red : FColor::Green, false, 1.0f);
 
+	DrawDebugLine(GetWorld(), start, end, FColor::Blue, false, 3.0f, 0, 2.0f);
 #endif
 }
 
@@ -203,6 +226,22 @@ void ASoldierBaseCharacter::SetStop()
 	ASoldierAIController* AIController = Cast<ASoldierAIController>(GetController());
 	if(AIController)
 		AIController->StopAI();
+}
+
+void ASoldierBaseCharacter::ForceFront()
+{
+	 UCharacterMovementComponent* charMovement = GetCharacterMovement();
+
+	
+	charMovement->AddForce(GetActorForwardVector() * 5000000.f);
+	// LaunchCharacter(GetActorForwardVector() * 1000.f, true, false);
+	// charMovement->AddImpulse(GetActorForwardVector() * 10000.f);
+
+
+	//강아지캐릭일때
+		FVector impuse = GetActorForwardVector() * 500000.f;
+		GetMesh()->AddImpulseAtLocation(impuse,GetActorLocation() ,TEXT("shoulder_R")); // hand_r , hand_R_end
+	
 }
 
 

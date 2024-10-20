@@ -48,6 +48,8 @@ public:
 	void SetDead();
 
 	void SetStop();
+
+	void ForceFront();
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
@@ -67,6 +69,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Team)
 	TObjectPtr<class UPhysicalAnimationComponent> PhysicalAnimation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Hit)
+	TObjectPtr<class USceneComponent> HitPointStart;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Hit)
+	TObjectPtr<class USceneComponent> HitPointEnd;
 
 protected:
 	uint8 bIsDead : 1;

@@ -88,5 +88,7 @@ public:
 
 	TArray<ASoldierBaseCharacter*> GetTeamSoldierArray(ETeamType teamType);
 
-	FORCEINLINE bool IsContainGridIndex(int32 gridIndex) {return OwnTeamBatchGridAssignedMap.Contains(gridIndex);} 
+	FORCEINLINE bool IsContainGridIndex(int32 gridIndex) {return OwnTeamBatchGridAssignedMap.Contains(gridIndex);}
+
+	void GetActorForceOwnTeamTestCode();
 };
