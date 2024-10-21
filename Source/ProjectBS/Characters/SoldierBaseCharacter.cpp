@@ -153,7 +153,7 @@ void ASoldierBaseCharacter::AttackHitCheck()
 		UE_LOG(LogTemp, Warning, TEXT("hitDetected : %s"), *outHitResult.GetActor()->GetName() );
 
 		FDamageEvent damageEvent;
-		// outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
+		outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
 	}
 
 #if ENABLE_DRAW_DEBUG
