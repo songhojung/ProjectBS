@@ -287,6 +287,7 @@ ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector lo
 	return soldier;
 }
 
+//배치용 그리드 액터 생성 (현재 사용안함)
 void UGameFieldManager::CreateBatchGridActor()
 {
 	//필드에 배치 grid 생성
@@ -312,6 +313,12 @@ void UGameFieldManager::CreateBatchGridActor()
 	//그리드위 plane 체크 되도록 플레그 true 변경 
 	CanTick = true;
 
+}
+
+void UGameFieldManager::ReadyForBatch()
+{
+	//그리드위 plane 체크 되도록 플레그 true 변경 
+	CanTick = true;
 }
 
 void UGameFieldManager::TrackSampleSoldierMouseOnBatchGrid()

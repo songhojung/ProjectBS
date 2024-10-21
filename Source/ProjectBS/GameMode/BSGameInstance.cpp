@@ -113,7 +113,7 @@ void UBSGameInstance::PostGameLevelLoaded()
 		
 		
 		//필드에 배치 grid actor 생성
-		UGameFieldManager::Get(this)->CreateBatchGridActor();
+		UGameFieldManager::Get(this)->ReadyForBatch();
 	}
 
 	bBattleStarted = false;

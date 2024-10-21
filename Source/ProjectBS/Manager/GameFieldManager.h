@@ -65,7 +65,11 @@ protected:
 	ASoldierBaseCharacter* CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType);
 public:
 	void SetSpawnAreas();
+
+	//배치용 그리드 액터 생성 (현재 사용안함)
 	void CreateBatchGridActor();
+
+	void ReadyForBatch();
 
 public:
 	void StartBattleInField(int32 levelStageId);

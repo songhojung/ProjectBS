@@ -146,24 +146,24 @@ void AProjectBSPlayerController::OnSetDestinationReleased()
 	{
 		CachedDestination = Hit.Location;
 
-		ABatchGridActor* grid =  UGameFieldManager::Get(this)->GetBatchGrid();
-		if(grid!=nullptr)
-		{
-			int32 row;
-			int32 col;
-			FVector2d outGridCenterLocation;
-			grid->LocationToTile(Hit.Location,row,col);
-			grid->TileToGridLocation(row,col,true, outGridCenterLocation);
-
-			int32 gridIndex = grid->GetGridIndex(row,col);
+		// ABatchGridActor* grid =  UGameFieldManager::Get(this)->GetBatchGrid();
+		// if(grid!=nullptr)
+		// {
+		// 	int32 row;
+		// 	int32 col;
+		// 	FVector2d outGridCenterLocation;
+		// 	grid->LocationToTile(Hit.Location,row,col);
+		// 	grid->TileToGridLocation(row,col,true, outGridCenterLocation);
+		//
+		// 	int32 gridIndex = grid->GetGridIndex(row,col);
 
 			// if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
 			// 	UGameFieldManager::Get(this)->BatchSoldier(FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
 
-			if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
+			// if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
 				UGameFieldManager::Get(this)->BatchSoldier(FVector(Hit.Location.X,Hit.Location.Y,0.f), ETeamType::OwnTeam);
 
-		}
+		// }
 	}
 	else
 	{
