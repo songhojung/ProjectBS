@@ -144,7 +144,8 @@ void ASoldierBaseCharacter::AttackHitCheck()
 	FVector start = HitPointStart->GetComponentLocation();
 	FVector end = HitPointEnd->GetComponentLocation();
 	FVector SweepDirection = (end - start).GetSafeNormal();
-	float CapsuleHalfHeight = FVector::Distance(start,end);
+
+	float CapsuleHalfHeight = FVector::DistXY(start,end) / 2;
 
 	
 	bool hitDetected = GetWorld()->SweepSingleByChannel(outHitResult,start,end,FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel1, FCollisionShape::MakeCapsule(attackRadius,CapsuleHalfHeight),params);
@@ -159,7 +160,7 @@ void ASoldierBaseCharacter::AttackHitCheck()
 #if ENABLE_DRAW_DEBUG
 	// FVector capsuleOrigin = start + (end - start) * 0.5f;
 	FVector capsuleOrigin = ( start + end )/ 2;
-	float capsuleHalfHeight = attackRange * 0.5f;
+	// float capsuleHalfHeight = attackRange * 0.5f;
 	FColor drawColor = hitDetected ? FColor::Green : FColor::Red;
 
 	FRotator RotatorFromX = FRotationMatrix::MakeFromZ(SweepDirection).Rotator();
