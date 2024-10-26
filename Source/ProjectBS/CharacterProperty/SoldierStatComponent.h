@@ -24,8 +24,11 @@ protected:
 
 public:
 	  void SetStat(const FSoldierStatData& statData);
-	FORCEINLINE float GetDetectRange(){return  700.f;}
+	FORCEINLINE float GetDetectRange(){return  BaseStatData.SightRange;}
+	FORCEINLINE float GetAttackRange(){return  BaseStatData.AttackRange;}
+	FORCEINLINE float GetAttackSpeed(){return  BaseStatData.AttackSpeed;}
 	FORCEINLINE float GetAttackDamange(){return BaseStatData.AttackDamage;}
+	FORCEINLINE float GetMovementSpeed(){return  BaseStatData.MovementSpeed;}
 	FORCEINLINE const FSoldierStatData& GetStat(){return BaseStatData;}
 public:
 

@@ -5,6 +5,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Characters/SoldierBaseCharacter.h"
 
 ASoldierAIController::ASoldierAIController()
 {
@@ -47,6 +48,17 @@ void ASoldierAIController::StartAI()
 		if(UseBlackboard(BBAsset,BlackboardComponent))
 		{
 			RunBehaviorTree(BTAsset);
+		}
+	}
+
+	UBehaviorTreeComponent* BTComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if(BTComponent)
+	{
+		ASoldierBaseCharacter* soldier = Cast<ASoldierBaseCharacter>(GetPawn()) ;
+		if(soldier)
+		{
+			float length = soldier->GetAttackAnimLength();
+			BTComponent->GetBlackboardComponent()->SetValueAsFloat(BBKEY_ATK_ANIM_LENGTH,length);
 		}
 	}
 }

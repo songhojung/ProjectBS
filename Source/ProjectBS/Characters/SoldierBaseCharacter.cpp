@@ -115,6 +115,40 @@ float ASoldierBaseCharacter::GetAIDectectRange()
 	return StatComponent->GetDetectRange();
 }
 
+float ASoldierBaseCharacter::GetAIAttackRange()
+{
+	return StatComponent->GetAttackRange();
+}
+
+float ASoldierBaseCharacter::GetAIAttackSpeed()
+{
+	return StatComponent->GetAttackSpeed();
+}
+
+float ASoldierBaseCharacter::GetAIMovementSpeed()
+{
+	return StatComponent->GetMovementSpeed();
+}
+
+float ASoldierBaseCharacter::GetAIColliderRadius()
+{
+	return  GetCapsuleComponent()->GetScaledCapsuleRadius();
+}
+
+float ASoldierBaseCharacter::GetAttackAnimLength()
+{
+	int index = AttackMontage->GetSectionIndex(TEXT("AttackEnd"));
+	float startTime;
+	float endTime;
+
+	//섹션 놓은 위치가 start, 그다음 섹션까지가 end가 됨,
+	//놓은위치를 공격 모션 끝으로 판단함. 그래서 공격길이를 start로 잡음
+	AttackMontage->GetSectionStartAndEndTime(index,startTime,endTime);
+	// UE_LOG(LogTemp, Warning, TEXT("Attack() GetSectionIndex : %f , %f"), startTime,endTime );
+
+	return startTime;
+}
+
 bool ASoldierBaseCharacter::IsDead()
 {
 	return bIsDead;
@@ -128,6 +162,14 @@ void ASoldierBaseCharacter::Attack()
 	if(animInstance != nullptr)
 	{
 		animInstance->Montage_Play(AttackMontage);
+		animInstance->Montage_SetPlayRate(AttackMontage, StatComponent->GetAttackSpeed());
+		// AttackMontage->GetPlayLength()
+		int index = AttackMontage->GetSectionIndex(TEXT("AttackEnd"));
+		float startTime;
+		float endTime;
+		AttackMontage->GetSectionStartAndEndTime(index,startTime,endTime);
+		UE_LOG(LogTemp, Warning, TEXT("Attack() GetSectionIndex : %f , %f"), startTime,endTime );
+
 	}
 }
 
@@ -154,7 +196,7 @@ void ASoldierBaseCharacter::AttackHitCheck()
 		UE_LOG(LogTemp, Warning, TEXT("hitDetected : %s"), *outHitResult.GetActor()->GetName() );
 
 		FDamageEvent damageEvent;
-		outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
+		// outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
 	}
 
 #if ENABLE_DRAW_DEBUG

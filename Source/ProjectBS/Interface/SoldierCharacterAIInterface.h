@@ -29,7 +29,10 @@ public:
 	virtual  bool IsDead() = 0;
 	// virtual float GetAIPatrolRadius() = 0;
 	virtual float GetAIDectectRange() = 0;
-	// virtual float GetAIAttackRange() = 0;
+	virtual float GetAIAttackRange() = 0;
+	virtual float GetAIAttackSpeed() = 0;
+	virtual float GetAIMovementSpeed() = 0;
+	virtual float GetAIColliderRadius() = 0;
 	// virtual float GetAITurnSpeed() = 0;
 	
 	virtual void Attack() = 0;

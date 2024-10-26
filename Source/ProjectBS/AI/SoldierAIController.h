@@ -7,7 +7,9 @@
 #include "SoldierAIController.generated.h"
 
 #define BBKEY_TARGET TEXT("Target")
+#define BBKEY_TARGET_LOCATION TEXT("TargetLocation")
 #define BBKEY_ENEMYSPAWN_LOCATION TEXT("EnemySpawnLocation")
+#define BBKEY_ATK_ANIM_LENGTH TEXT("AtkAnimLength")
 
 /**
  * 

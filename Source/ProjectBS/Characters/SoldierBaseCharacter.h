@@ -35,6 +35,11 @@ public:
 	virtual AActor& GetOtherTeamBaseActor() const override;
 	FORCEINLINE class ASoldierAIController* GetAIController() {return Cast<class ASoldierAIController>(GetController());}
 	virtual float GetAIDectectRange() override;
+	virtual float GetAIAttackRange() override;
+	virtual float GetAIAttackSpeed() override;
+	virtual float GetAIMovementSpeed() override;
+	virtual float GetAIColliderRadius() override;
+	float GetAttackAnimLength();
 
 	virtual  bool IsDead() override;
 	//AttackSection
