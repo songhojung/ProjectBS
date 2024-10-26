@@ -10,6 +10,7 @@
 #define BBKEY_TARGET_LOCATION TEXT("TargetLocation")
 #define BBKEY_ENEMYSPAWN_LOCATION TEXT("EnemySpawnLocation")
 #define BBKEY_ATK_ANIM_LENGTH TEXT("AtkAnimLength")
+#define BBKEY_IS_IN_ATTACK_RANGE TEXT("IsInAttackRange")	
 
 /**
  * 

@@ -87,6 +87,21 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	// 	UE_LOG(LogTemp, Warning, TEXT("**** dect target is null : %s"), *ownerPawn->GetName() );
 	//
 	// }
+
+	// FVector finalTargetPos;
+	//
+	// if(targetActor)
+	// {
+	// 	ISoldierCharacterAIInterface* soliderPawn = Cast<ISoldierCharacterAIInterface>(targetActor);
+	//
+	// 	FVector targetPos = targetActor->GetActorLocation();
+	// 	// float targetColliderRadius = soliderPawn->GetAIColliderRadius();
+	// 	float ownerActorAttackRange = aiCharacter->GetAIAttackRange();
+	// 	FVector direction = targetPos - ownerPawn->GetActorLocation();
+	// 	direction.Normalize();
+	// 	finalTargetPos = targetPos +  (direction * ownerActorAttackRange); // 타겟위치 + 해당AI 공격거리
+	// }
 	
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET,targetActor);
+	// OwnerComp.GetBlackboardComponent()->SetValueAsVector(BBKEY_TARGET_LOCATION,finalTargetPos);
 }
