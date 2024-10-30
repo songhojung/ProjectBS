@@ -129,7 +129,7 @@ void UGameFieldManager::StartBattleInField(int32 levelStageId)
 				
 				int row = i / 10;
 				int column = i % 10;
-				FVector SpawnLocation = SpawnArea->GetActorLocation() + FVector(row * 100, column * 100, 0); 
+				FVector SpawnLocation = SpawnArea->GetActorLocation() + FVector(row * 150, column * 150, 0); 
 				// ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(SoldierClass, FTransform( SpawnArea->GetActorRotation(), SpawnLocation));
 				// soldier->SetTeam(SpawnArea->GetTeamType());
 				// soldier->SetStat(*statData);
@@ -141,6 +141,7 @@ void UGameFieldManager::StartBattleInField(int32 levelStageId)
 				//AI 시작
 				soldier->GetAIController()->StartAI();
 
+				
 				OtherSoldierArray.Add(soldier);
 			}
 
@@ -279,6 +280,7 @@ ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector lo
 	ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(soldierClass, FTransform( spawnRotation, spawnLocation));
 	soldier->SetTeam(teamType);
 	soldier->SetStat(*statData);
+	soldier->SetCollisionProfileName(teamType);
 
 	float height = soldier->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	spawnLocation = FVector(location.X, location.Y, height);
@@ -408,7 +410,7 @@ void UGameFieldManager::TrackSampleSoldierMouseOnGround()
 		{
 			FVector spawnLocation = ownSpawnArea->GetActorLocation();
 			distanceWithSpawnArea= FVector::Distance(FVector(Hit.Location.X,Hit.Location.Y,0.f),FVector(spawnLocation.X,spawnLocation.Y,0.f));
-			UE_LOG(LogTemp, Warning, TEXT("####distanceWithSpawnArea : %f"), distanceWithSpawnArea);
+			// UE_LOG(LogTemp, Warning, TEXT("####distanceWithSpawnArea : %f"), distanceWithSpawnArea);
 		}
 
 		

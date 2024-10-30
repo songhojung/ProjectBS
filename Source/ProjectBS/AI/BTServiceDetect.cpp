@@ -43,7 +43,8 @@ void UBTServiceDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	QueryParams.AddIgnoredActor(ownerPawn);  // 자신의 액터는 무시
 		
 	// 콜리전 채널 설정 (예: ECC_Pawn)
-	ECollisionChannel CollisionChannel = ECC_GameTraceChannel1; //SoldierPawn 채널
+	// ECollisionChannel CollisionChannel = ECC_GameTraceChannel1; //SoldierPawn 채널
+	ECollisionChannel CollisionChannel = ECC_Pawn; //SoldierPawn 채널
 		
 	// OverlapMultiByChannel 호출
 	bool bHasOverlaps = world->OverlapMultiByChannel(

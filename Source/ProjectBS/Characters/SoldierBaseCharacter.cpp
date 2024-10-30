@@ -39,6 +39,14 @@ ASoldierBaseCharacter::ASoldierBaseCharacter()
 	PhysicalAnimation = CreateDefaultSubobject<UPhysicalAnimationComponent>("PhysicalAnimationComponent");
 }
 
+void ASoldierBaseCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+
+}
+
+
 // Called when the game starts or when spawned
 void ASoldierBaseCharacter::BeginPlay()
 {
@@ -54,7 +62,12 @@ void ASoldierBaseCharacter::BeginPlay()
 
 	StatComponent->FOnDeadEvent.BindUObject(this, &ASoldierBaseCharacter::SetDead);
 
+
+	// SetCollisionProfileName(GetTeam());
+	
 	PhysicalAnimation->SetSkeletalMeshComponent(MeshComponent);
+
+
 	
 	// FPhysicalAnimationData 초기화
 	// FPhysicalAnimationData PhysicalAnimationData;
@@ -76,9 +89,9 @@ void ASoldierBaseCharacter::BeginPlay()
 	//
 	// MeshComponent->SetAllBodiesBelowSimulatePhysics(TEXT("spine_001"),true,false);
 
+	UE_LOG(LogTemp, Error, TEXT("BeginPlay() %s"),*this->GetName());
 
 }
-
 
 
 
@@ -89,7 +102,8 @@ void ASoldierBaseCharacter::SetTeam(ETeamType Team)
 
 	TeamComponent->SetTeamType(Team);
 	TeamComponent->SetTeamDynamicMaterialInstanceOverride(GetMesh(),Team);
-	
+
+
 }
 
 void ASoldierBaseCharacter::SetStat(const FSoldierStatData& statData)
@@ -154,6 +168,20 @@ bool ASoldierBaseCharacter::IsDead()
 	return bIsDead;
 }
 
+void ASoldierBaseCharacter::SetCollisionProfileName(ETeamType team)
+{
+	//팀별로 콜리젼 프로필 다르게 설정
+	if (UMeshComponent* meshComponent = GetMesh())
+	{
+		FName TeamName = team == ETeamType::OwnTeam ? TEXT("SbCollisionOwn") : TEXT("SbCollisionOther");
+		meshComponent->SetCollisionProfileName(TeamName);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("MeshComponent is null in SetCollisionProfileName"));
+	}
+}
+
 
 //공격하기
 void ASoldierBaseCharacter::Attack()
@@ -168,7 +196,7 @@ void ASoldierBaseCharacter::Attack()
 		float startTime;
 		float endTime;
 		AttackMontage->GetSectionStartAndEndTime(index,startTime,endTime);
-		UE_LOG(LogTemp, Warning, TEXT("Attack() GetSectionIndex : %f , %f"), startTime,endTime );
+		// UE_LOG(LogTemp, Warning, TEXT("Attack() GetSectionIndex : %f , %f"), startTime,endTime );
 
 	}
 }
@@ -196,7 +224,7 @@ void ASoldierBaseCharacter::AttackHitCheck()
 		UE_LOG(LogTemp, Warning, TEXT("hitDetected : %s"), *outHitResult.GetActor()->GetName() );
 
 		FDamageEvent damageEvent;
-		// outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
+		outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
 	}
 
 #if ENABLE_DRAW_DEBUG
@@ -222,6 +250,9 @@ float ASoldierBaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent 
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	StatComponent->ApplyDamage(DamageAmount);
+
+	UE_LOG(LogTemp, Warning, TEXT("$$$$$ 2 TakeDamage : %f , %s"),DamageAmount, *GetName() );
+
 
 	return DamageAmount;
 }

@@ -22,6 +22,8 @@ ASoldierAIController::ASoldierAIController()
 	}
 
 	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("AIBlackboardComponent"));
+
+
 }
 
 void ASoldierAIController::BeginPlay()
@@ -30,6 +32,14 @@ void ASoldierAIController::BeginPlay()
 
 	
 }
+
+// void ASoldierAIController::OnPossess(APawn* InPawn)
+// {
+// 	Super::OnPossess(InPawn);
+// 	UE_LOG(LogTemp, Error, TEXT("ASoldierAIController() OnPossess %s"),*this->GetName());
+//
+//
+// }
 
 void ASoldierAIController::StopAI()
 {
@@ -43,6 +53,13 @@ void ASoldierAIController::StopAI()
 
 void ASoldierAIController::StartAI()
 {
+	// 확인: Blackboard 및 BehaviorTree가 유효한지 체크
+	if (!BBAsset || !BTAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Blackboard or Behavior Tree asset is not set in SoldierAIController"));
+		return;
+	}
+	
 	if(BBAsset && BTAsset)
 	{
 		if(UseBlackboard(BBAsset,BlackboardComponent))
@@ -50,7 +67,7 @@ void ASoldierAIController::StartAI()
 			RunBehaviorTree(BTAsset);
 		}
 	}
-
+	
 	UBehaviorTreeComponent* BTComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
 	if(BTComponent)
 	{

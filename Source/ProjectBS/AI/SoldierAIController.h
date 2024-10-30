@@ -24,7 +24,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
+	// virtual void OnPossess(APawn* InPawn) override;
 protected:
 	UPROPERTY()
 	TObjectPtr<class UBlackboardData> BBAsset;

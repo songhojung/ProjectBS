@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AI/SoldierAIController.h"
+#include "CharacterProperty/SoldierStatComponent.h"
 #include "GameFramework/Character.h"
 #include "Interface/SoldierCharacterAIInterface.h"
 #include "Interface/IAnimantionAttackInterface.h"
@@ -24,14 +25,16 @@ public:
 
 	
 protected:
+
+	virtual void PostInitializeComponents() override;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 	//teamSection
 public:
 	void SetTeam(ETeamType Team);
 	void SetStat(const FSoldierStatData& statData);
 	virtual ETeamType GetTeam() const override;
+	virtual USoldierStatComponent* GetStatComponent(){return StatComponent;}
 	virtual AActor& GetOtherTeamBaseActor() const override;
 	FORCEINLINE class ASoldierAIController* GetAIController() {return Cast<class ASoldierAIController>(GetController());}
 	virtual float GetAIDectectRange() override;
@@ -44,6 +47,7 @@ public:
 	virtual  bool IsDead() override;
 	//AttackSection
 public:
+	void SetCollisionProfileName(ETeamType team);
 	virtual void Attack() override;
 
 	void virtual AttackHitCheck() override;

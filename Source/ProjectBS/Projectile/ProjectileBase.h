@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CharacterProperty/TeamComponent.h"
 #include "GameFramework/Actor.h"
 #include "ProjectileBase.generated.h"
 
@@ -20,10 +21,20 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	TObjectPtr<class UStaticMeshComponent> ProjectileMesh;
-	
-	
-public:	
-	
 
+	float Damage;
+
+
+public:
+	FORCEINLINE void SetDamage(float damage){Damage = damage;};
+	void SetCollisionProfileName(ETeamType teamType);
+
+private:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
+	// UFUNCTION()
+	// void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
