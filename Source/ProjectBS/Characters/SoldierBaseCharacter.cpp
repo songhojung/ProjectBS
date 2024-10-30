@@ -89,7 +89,6 @@ void ASoldierBaseCharacter::BeginPlay()
 	//
 	// MeshComponent->SetAllBodiesBelowSimulatePhysics(TEXT("spine_001"),true,false);
 
-	UE_LOG(LogTemp, Error, TEXT("BeginPlay() %s"),*this->GetName());
 
 }
 
