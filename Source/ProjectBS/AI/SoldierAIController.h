@@ -38,4 +38,5 @@ protected:
 public:
 	void StopAI();
 	void StartAI();
+	void DetectedTargetClear();
 };

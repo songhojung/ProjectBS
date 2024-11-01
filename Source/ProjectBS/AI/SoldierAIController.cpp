@@ -80,3 +80,8 @@ void ASoldierAIController::StartAI()
 	}
 }
 
+void ASoldierAIController::DetectedTargetClear()
+{
+	BlackboardComponent->SetValueAsObject(BBKEY_TARGET,nullptr);
+}
+

@@ -42,6 +42,7 @@ public:
 	virtual float GetAIAttackSpeed() override;
 	virtual float GetAIMovementSpeed() override;
 	virtual float GetAIColliderRadius() override;
+	virtual float GetAITurnSpeed() override;
 	float GetAttackAnimLength();
 
 	virtual  bool IsDead() override;

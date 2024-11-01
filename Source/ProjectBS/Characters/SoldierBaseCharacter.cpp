@@ -148,6 +148,11 @@ float ASoldierBaseCharacter::GetAIColliderRadius()
 	return  GetCapsuleComponent()->GetScaledCapsuleRadius();
 }
 
+float ASoldierBaseCharacter::GetAITurnSpeed()
+{
+	return 100.0f;
+}
+
 float ASoldierBaseCharacter::GetAttackAnimLength()
 {
 	int index = AttackMontage->GetSectionIndex(TEXT("AttackEnd"));
