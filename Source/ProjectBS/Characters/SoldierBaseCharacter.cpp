@@ -11,6 +11,7 @@
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameMode/BSGameInstance.h"
+#include "Physics/PhysicsFiltering.h"
 #include "PhysicsEngine/PhysicalAnimationComponent.h"
 
 // Sets default values
@@ -175,10 +176,11 @@ bool ASoldierBaseCharacter::IsDead()
 void ASoldierBaseCharacter::SetCollisionProfileName(ETeamType team)
 {
 	//팀별로 콜리젼 프로필 다르게 설정
-	if (UMeshComponent* meshComponent = GetMesh())
+	
+	if (UCapsuleComponent* capsuleComp = GetCapsuleComponent())
 	{
 		FName TeamName = team == ETeamType::OwnTeam ? TEXT("SbCollisionOwn") : TEXT("SbCollisionOther");
-		meshComponent->SetCollisionProfileName(TeamName);
+		capsuleComp->SetCollisionProfileName(TeamName);
 	}
 	else
 	{
@@ -212,7 +214,7 @@ void ASoldierBaseCharacter::AttackHitCheck()
 	FHitResult outHitResult;
 	FCollisionQueryParams params(SCENE_QUERY_STAT(Attack), false, this);
 	float attackRange = 20.f;
-	float attackRadius = 30.f;
+	float attackRadius = 50.f;
 	// FVector start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
 	// FVector end  =start + GetActorForwardVector() * attackRange;
 	FVector start = HitPointStart->GetComponentLocation();
@@ -221,11 +223,13 @@ void ASoldierBaseCharacter::AttackHitCheck()
 
 	float CapsuleHalfHeight = FVector::DistXY(start,end) / 2;
 
-	
-	bool hitDetected = GetWorld()->SweepSingleByChannel(outHitResult,start,end,FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel1, FCollisionShape::MakeCapsule(attackRadius,CapsuleHalfHeight),params);
+	// FName profileName = GetTeam()== ETeamType::OwnTeam ? TEXT("SbCollisionOther") : TEXT("SbCollisionOwn");
+	ECollisionChannel collisionChannel = GetTeam()== ETeamType::OwnTeam ? ECC_GameTraceChannel4 : ECC_GameTraceChannel3;
+	bool hitDetected = GetWorld()->SweepSingleByChannel(outHitResult,start,end,FQuat::Identity, collisionChannel, FCollisionShape::MakeCapsule(attackRadius,CapsuleHalfHeight),params);
 	if(hitDetected)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("hitDetected : %s"), *outHitResult.GetActor()->GetName() );
+		FString channel = StaticEnum<ECollisionChannel>()->GetValueAsString(collisionChannel);
+		UE_LOG(LogTemp, Warning, TEXT("hitDetected : %s / channel : %s"), *outHitResult.GetActor()->GetName(), *channel);
 
 		FDamageEvent damageEvent;
 		outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
@@ -240,7 +244,7 @@ void ASoldierBaseCharacter::AttackHitCheck()
 	FRotator RotatorFromX = FRotationMatrix::MakeFromZ(SweepDirection).Rotator();
 	FQuat RotationQuat = RotatorFromX.Quaternion();
 	
-	DrawDebugCapsule(GetWorld(), capsuleOrigin, CapsuleHalfHeight, attackRange, RotationQuat, drawColor,false, 3.0f);
+	DrawDebugCapsule(GetWorld(), capsuleOrigin, CapsuleHalfHeight, attackRadius, RotationQuat, drawColor,false, 3.0f);
 	// DrawDebugSphere(GetWorld(), End, SphereRadius, 24, bHit ? FColor::Red : FColor::Green, false, 1.0f);
 
 	DrawDebugLine(GetWorld(), start, end, FColor::Blue, false, 3.0f, 0, 2.0f);
