@@ -1,5 +1,5 @@
 ﻿Name,Id,MaxHp,AttackDamage,AttackSpeed,MovementSpeed,AttackRange,SightRange
-HandCombatSoldier,1,100,50,3,10,180,500
-HandCombatSoldier2,2,110,40,1,10,180,500
+HandCombatSoldier,1,100,50,3,10,150,500
+HandCombatSoldier2,2,110,40,1,10,150,500
 HandCombatSoldier3,3,100,50,2,20,180,500
 HandCombatSoldier4,4,200,100,1,5,2000,2200
