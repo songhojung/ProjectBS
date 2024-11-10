@@ -175,6 +175,9 @@ void UBSGameInstance::BattleEnd()
 	//모든병력 행동중지
 	for (auto unit : allUnits)
 	{
+		if(unit==nullptr)
+			continue;
+		
 		if(unit->IsDead()==false)
 			unit->SetStop();
 	}
