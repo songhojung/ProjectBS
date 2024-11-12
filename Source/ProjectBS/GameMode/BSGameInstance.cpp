@@ -103,6 +103,8 @@ void UBSGameInstance::PostGameLevelLoaded()
 		//배치 UI 노출
 		UUIManager::Get()->AddUI(TEXT("BattleBatchUI"),playerController);
 
+
+		
 		//병력배치비용 다시 초기화
 		ClearBattleCost();
 		

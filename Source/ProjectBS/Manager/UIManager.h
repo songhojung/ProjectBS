@@ -40,6 +40,7 @@ public:
 
 protected:
 	void AddWidgetToViewport(UUserWidget* widget,APlayerController* playerController );
+	void OpenDisplaySwitchUI(APlayerController* playerController);
 
 public:
 	bool IsContainUI(FString uiName);

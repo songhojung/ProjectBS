@@ -41,7 +41,9 @@ void UUIManager::AddUI(FString uiName, APlayerController* playerController,FComp
 
 		completedCallback.ExecuteIfBound(createdUI);
 	}
-	
+
+	if(uiName.Equals(FString("DisplaySwitchUI")) == false)
+		OpenDisplaySwitchUI(playerController);
 }
 
 void UUIManager::AddPopupUI(FString uiName, APlayerController* playerController,FCompletedAddUIDelegate completedCallback)
@@ -91,6 +93,13 @@ void UUIManager::AddWidgetToViewport(UUserWidget* widget, APlayerController* pla
 		widget->AddToViewport();//화면에 위젯추가
 	}
 }
+
+void UUIManager::OpenDisplaySwitchUI(APlayerController* playerController)
+{
+	if(playerController!=nullptr)
+		AddUI("DisplaySwitchUI",playerController);
+}
+
 
 bool UUIManager::IsContainUI(FString uiName)
 {
