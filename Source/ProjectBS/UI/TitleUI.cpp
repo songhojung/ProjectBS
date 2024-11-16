@@ -22,10 +22,18 @@ void UTitleUI::StartButtonClicked()
 	UE_LOG(LogTemp, Warning, TEXT("Start Button Clicked!"));
 
 	
-	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
-	if(gameIns)
+	// UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	// if(gameIns)
+	// {
+	// 	gameIns->GameStart(gameIns->GetGameLevelId());
+	// }
+
+	//타이틀 UI 노출
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+
+	if(playerController!=nullptr)
 	{
-		gameIns->GameStart(gameIns->GetGameLevelId());
+		UUIManager::Get()->AddUI(TEXT("SelectGameModeUI"),playerController);
 	}
 	
 	UUIManager::Get()->RemoveUI(this);
