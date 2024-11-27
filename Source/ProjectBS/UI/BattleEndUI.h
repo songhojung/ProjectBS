@@ -20,6 +20,15 @@ protected:
 
 public:
 	void SetUI(ETeamType teamType);
+
+public:
+	// 블루프린트의 PlaySoundEffect 함수 호출
+	UFUNCTION(BlueprintImplementableEvent, Category = "Sound")
+	void PlaySoundEffect(bool isWin);
+
+
+	
+public:
 	
 	UFUNCTION()
 	void  ButtonNextLevelClicked();

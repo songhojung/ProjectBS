@@ -27,11 +27,14 @@ void UBattleEndUI::SetUI(ETeamType teamType)
 		Text_Win->SetVisibility(ESlateVisibility::Visible);
 		Button_NextLevel->SetVisibility(ESlateVisibility::Visible);
 		Button_GoToMenu->SetVisibility(ESlateVisibility::Visible);
+		PlaySoundEffect(true);
 	}
 	else
 	{
 		Text_Lose->SetVisibility(ESlateVisibility::Visible);
 		Button_GoToMenu->SetVisibility(ESlateVisibility::Visible);
+		PlaySoundEffect(false);
+
 	}
 }
 
