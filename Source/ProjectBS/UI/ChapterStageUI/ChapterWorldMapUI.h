@@ -17,11 +17,21 @@ class PROJECTBS_API UChapterWorldMapUI : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+private:
+	int32 CurrentSeletedNodeId = 0;
+	
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Node)
+	TArray<class UChapterWorldMapNode*> WorldMapNodes;
+	
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
 	class UButton* Button_Play;
 
 
+
+public:
+	void SetCurrentSelectedNode(int32 nodeId);
+	
 protected:
 	UFUNCTION()
 	void OnClickButtonPlay();
