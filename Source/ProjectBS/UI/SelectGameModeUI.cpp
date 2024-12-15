@@ -31,13 +31,15 @@ void USelectGameModeUI::OnClickButtonBack()
 
 void USelectGameModeUI::OnClickButtonCampaignMode()
 {
-	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
-	if(gameIns)
-	{
-		gameIns->GameStart(gameIns->GetGameLevelId());
-	}
+	//타이틀 UI 노출
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 
-	UUIManager::Get()->RemoveUI(this);
+	if(playerController!=nullptr)
+	{
+		UUIManager::Get()->AddUI(TEXT("ChapterWorldMapUI"),playerController);
+
+		UUIManager::Get()->RemoveUI(this);
+	}	
 
 
 }
