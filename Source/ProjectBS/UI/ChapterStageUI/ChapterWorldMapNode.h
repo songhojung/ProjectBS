@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS()
 class PROJECTBS_API UChapterWorldMapNode : public UUserWidget
 {
 	GENERATED_BODY()
