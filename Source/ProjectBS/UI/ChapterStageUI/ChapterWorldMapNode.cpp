@@ -5,6 +5,9 @@
 
 #include "ChapterWorldMapUI.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
+#include "GameData/ChapterData.h"
+#include "Manager/GameDataManager.h"
 #include "Manager/UIManager.h"
 
 void UChapterWorldMapNode::NativeConstruct()
@@ -19,11 +22,18 @@ void UChapterWorldMapNode::NativeConstruct()
 
 void UChapterWorldMapNode::SetMapNode()
 {
+	const FChapterData* chapterData = UGameDataManager::Get()->GetChapterData(ChapterId);
+	if(chapterData!=nullptr)
+	{
+		//챕터이름
+		FString chapterName = FString::Printf(TEXT("Chap.%d %s"),ChapterId,*chapterData->ChapterName);
+		Text_ChapterName->SetText(FText::FromString(chapterName));
+	}
 }
 
 void UChapterWorldMapNode::SelectedNode(int nodeId)
 {
-	bool isSelected = NodeId == nodeId;
+	bool isSelected = ChapterId == nodeId;
 	Button_Selected->SetVisibility(isSelected ? ESlateVisibility::Visible: ESlateVisibility::Collapsed);
 	Button_Unselected->SetVisibility(isSelected== false ? ESlateVisibility::Visible: ESlateVisibility::Collapsed);
 }
@@ -39,6 +49,6 @@ void UChapterWorldMapNode::ClickUnselectedButton()
 	UChapterWorldMapUI* worldmapUI =  Cast<UChapterWorldMapUI>(UUIManager::Get()->GetUI("ChapterWorldMapUI"));
 	if(worldmapUI!=nullptr)
 	{
-		worldmapUI->SetCurrentSelectedNode(NodeId);
+		worldmapUI->SetCurrentSelectedNode(ChapterId);
 	}
 }

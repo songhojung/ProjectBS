@@ -39,6 +39,7 @@ UGameDataManager::UGameDataManager()
 	LoadDataTable(TEXT("SoldierStatTable"),SoldierStatTables);
 	LoadDataTable(TEXT("SoldierCharTable"),SoldierCharTables);
 	LoadDataTable(TEXT("LevelStageTable"),LevelStageTables);
+	LoadDataTable(TEXT("ChapterTable"),ChapterTables);
 	
 }
 
@@ -73,10 +74,7 @@ const FSoldierStatData* UGameDataManager::GetSoldierStatData(int id)
 		return data.Id == id;
 	});
 
-	if(findData)
-		return findData;
-	else
-		return nullptr;
+	return findData;
 }
 
 const FSoldierCharData* UGameDataManager::GetSoldierCharData(int id)
@@ -86,10 +84,7 @@ const FSoldierCharData* UGameDataManager::GetSoldierCharData(int id)
 		return data.Id == id;
 	});
 
-	if(findData)
-		return findData;
-	else
-		return nullptr;
+	return findData;
 }
 
 const FLevelStageData* UGameDataManager::GetLevelStageData(int id)
@@ -99,10 +94,17 @@ const FLevelStageData* UGameDataManager::GetLevelStageData(int id)
 		return data.Id == id;
 	});
 
-	if(findData)
-		return findData;
-	else
-		return nullptr;
+	return findData;
+}
+
+const FChapterData* UGameDataManager::GetChapterData(int id)
+{
+	FChapterData* findData = ChapterTables.FindByPredicate([id](const FChapterData& data)
+	{
+		return data.Id == id;
+	});
+
+	return findData;
 }
 
 //특정스테이지의 적병력의 병력이름과 숫자반환

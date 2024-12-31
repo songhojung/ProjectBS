@@ -20,13 +20,15 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Node)
-	int NodeId;
+	int ChapterId;
 
 
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
 	class UButton* Button_Selected;
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
 	class UButton* Button_Unselected;
+	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
+	class UTextBlock* Text_ChapterName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Node)
 	TArray<UImage*> Fogs;

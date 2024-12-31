@@ -6,7 +6,10 @@
 #include "ChapterWorldMapNode.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
+#include "GameData/ChapterData.h"
 #include "GameMode/BSGameInstance.h"
+#include "Manager/GameDataManager.h"
 #include "Manager/UIManager.h"
 
 
@@ -48,6 +51,37 @@ void UChapterWorldMapUI::SetCurrentSelectedNode(int32 nodeId)
 	{
 		node->SelectedNode(CurrentSeletedNodeId);
 	}
+
+	//챕터 정보 패널 UI설정
+	SetChapterInfoPanel(nodeId);
+}
+
+void UChapterWorldMapUI::SetChapterInfoPanel(int chapterId)
+{
+	const FChapterData* chapterData = UGameDataManager::Get()->GetChapterData(chapterId);
+	if(chapterData!=nullptr)
+	{
+		//챕터 번호
+		FString chapterNumText = FString::Printf(TEXT("CHAPTER.%d"),chapterData->Id);
+		Text_ChapterNum->SetText(FText::FromString(chapterNumText));
+
+		//챕터 썸네일
+		FString texturePath = FString::Printf(TEXT("/Game/UIResource/chapter_thumbnail_%d.chapter_thumbnail_%d"), chapterData->Id, chapterData->Id);
+		UTexture2D* NewTexture = LoadObject<UTexture2D>(nullptr, *texturePath);
+
+		if (NewTexture && Image_ChapterTumbnail)
+		{
+			// Brush를 생성하여 이미지를 설정
+			Image_ChapterTumbnail->SetBrushFromTexture(NewTexture);
+		}
+		
+		//챕터 이름
+		Text_ChapterName->SetText(FText::FromString(chapterData->ChapterName));
+
+		//챕터 설명
+		Text_ChapterDesc->SetText(FText::FromString(chapterData->Description));
+	}
+	
 }
 
 void UChapterWorldMapUI::OnClickButtonPlay()
