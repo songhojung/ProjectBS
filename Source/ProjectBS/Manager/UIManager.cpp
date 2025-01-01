@@ -42,8 +42,8 @@ void UUIManager::AddUI(FString uiName, APlayerController* playerController,FComp
 		completedCallback.ExecuteIfBound(createdUI);
 	}
 
-	if(uiName.Equals(FString("DisplaySwitchUI")) == false)
-		OpenDisplaySwitchUI(playerController);
+	// if(uiName.Equals(FString("DisplaySwitchUI")) == false)
+	// 	OpenDisplaySwitchUI(playerController);
 }
 
 void UUIManager::AddPopupUI(FString uiName, APlayerController* playerController,FCompletedAddUIDelegate completedCallback)
