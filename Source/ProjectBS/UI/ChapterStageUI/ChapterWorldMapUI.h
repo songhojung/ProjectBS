@@ -24,6 +24,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Node)
 	TArray<class UChapterWorldMapNode*> WorldMapNodes;
 
+	//맵챕터 리스트 아이템
+public:
+	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
+	class UVerticalBox* ChapterListPanel;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "ChapterListItem")
+	TSubclassOf<class UChapterListItem> ChapterListItemClass;
+	
+	TArray<class UChapterListItem*> ChapterListItems;
+
 	//챕터정보
 public:
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
@@ -34,7 +44,9 @@ public:
 	class UTextBlock* Text_ChapterName;
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
 	class UTextBlock* Text_ChapterDesc;
-	
+
+	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
+	class UOverlay* ChapterInfoLockMark;
 
 public:
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
@@ -47,6 +59,7 @@ public:
 	
 protected:
 
+	void CreateChapterListItems();
 	void SetChapterInfoPanel(int chapterId);
 	
 	UFUNCTION()

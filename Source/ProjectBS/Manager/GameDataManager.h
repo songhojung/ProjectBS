@@ -29,9 +29,13 @@ private:
 	void LoadDataTable(const FString& TableName, TArray<StructType>& OutArray);
 public:
 	const FSoldierStatData* GetSoldierStatData(int id) ;
+	
 	const FSoldierCharData* GetSoldierCharData(int id);
+	
 	const FLevelStageData* GetLevelStageData(int id);
+	
 	const FChapterData* GetChapterData(int id);
+	FORCEINLINE TArray<FChapterData> GetAllChapterDatas(){return ChapterTables;}
 
 	//특정스테이지의 적병력의 병력이름과 숫자반환
 	TTuple<TArray<FString>,TArray<int32>> GetSoldierNumsInfoInLevelStage(int levelStageId);

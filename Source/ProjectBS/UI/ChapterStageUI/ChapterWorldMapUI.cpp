@@ -3,10 +3,13 @@
 
 #include "UI/ChapterStageUI/ChapterWorldMapUI.h"
 
+#include "ChapterListItem.h"
 #include "ChapterWorldMapNode.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
+#include "Components/Overlay.h"
 #include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
 #include "GameData/ChapterData.h"
 #include "GameMode/BSGameInstance.h"
 #include "Manager/GameDataManager.h"
@@ -41,6 +44,11 @@ void UChapterWorldMapUI::NativeConstruct()
 		node->SelectedNode(CurrentSeletedNodeId);
 	}
 
+	//챕터리스트 아이템 생성
+	CreateChapterListItems();
+
+	//첫선택 챕터의 패널 정보설정
+	SetChapterInfoPanel(CurrentSeletedNodeId);
 }
 
 void UChapterWorldMapUI::SetCurrentSelectedNode(int32 nodeId)
@@ -52,8 +60,32 @@ void UChapterWorldMapUI::SetCurrentSelectedNode(int32 nodeId)
 		node->SelectedNode(CurrentSeletedNodeId);
 	}
 
+	for (auto chapterItem : ChapterListItems)
+	{
+		chapterItem->SelctedChapterItem(nodeId);
+	}
+	
 	//챕터 정보 패널 UI설정
 	SetChapterInfoPanel(nodeId);
+}
+
+void UChapterWorldMapUI::CreateChapterListItems()
+{
+	TArray<FChapterData> allChapterDatas = UGameDataManager::Get()->GetAllChapterDatas();
+
+	ChapterListItems.Empty();
+	for (auto chapterData : allChapterDatas)
+	{
+		UChapterListItem* item = CreateWidget<UChapterListItem>(GetWorld(),ChapterListItemClass);
+
+		item->SetItem(chapterData.Id);
+		item->SelctedChapterItem(CurrentSeletedNodeId);
+		
+		ChapterListPanel->AddChildToVerticalBox(item);
+
+		ChapterListItems.Add(item);
+	}
+
 }
 
 void UChapterWorldMapUI::SetChapterInfoPanel(int chapterId)
@@ -81,7 +113,13 @@ void UChapterWorldMapUI::SetChapterInfoPanel(int chapterId)
 		//챕터 설명
 		Text_ChapterDesc->SetText(FText::FromString(chapterData->Description));
 	}
-	
+
+
+	//Test
+	TArray<int> unlockedChapterIds = {1};
+
+	bool isLock = unlockedChapterIds.Contains(chapterId) == false;
+	ChapterInfoLockMark->SetVisibility(isLock ?ESlateVisibility::Visible : ESlateVisibility::Collapsed );
 }
 
 void UChapterWorldMapUI::OnClickButtonPlay()
