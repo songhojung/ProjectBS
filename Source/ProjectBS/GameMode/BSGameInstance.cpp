@@ -9,7 +9,10 @@
 #include "Manager/GameFieldManager.h"
 #include "Manager/UIManager.h"
 #include "UI/BattleEndUI.h"
+#include "UserData/PlayDataSaveGame.h"
+#include "UserData/SaveGameSubsystem.h"
 
+class UPlayDataSaveGame;
 class UBattleEndUI;
 
 UBSGameInstance::UBSGameInstance()
@@ -19,7 +22,7 @@ UBSGameInstance::UBSGameInstance()
 	bGameStarted = false;
 	bBattleStarted = false;
 	bBattleEnd = false;
-
+	
 	ClearBattleCost();
 	SetGameLevelId(1);
 }
@@ -28,12 +31,28 @@ void UBSGameInstance::Init()
 {
 	Super::Init();
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this,&UBSGameInstance::OnPostLoadMap);
+
+	InitializeChapterPlayData();
+
 }
 
 void UBSGameInstance::OnPostLoadMap(UWorld* loadedWorld)
 {
 	//게임레벨 로드음 해당레벨의 이후 처리진행
 	PostGameLevelLoaded();
+}
+
+void UBSGameInstance::InitializeChapterPlayData()
+{
+	//초기화시 캠페인 챕터 스테이지의 첫 챕터 플레이 정보 없으면 생성해서 save 한다.
+	UPlayDataSaveGame* playSaveData = USaveGameSubsystem::LoadSavedGameData<UPlayDataSaveGame>(this,TEXT("PlayData"),0);
+	FChapterStageClearData* chapterStatePlayData = playSaveData->GetChapterStageClearData(playSaveData->LastChapterId);
+	if(chapterStatePlayData == nullptr)
+	{
+		playSaveData->SetChapterStageClearData(playSaveData->LastChapterId,1);
+
+		USaveGameSubsystem::SaveSaveGameData(TEXT("PlayData"),playSaveData);
+	}
 }
 
 int32 UBSGameInstance::GetMaxBattleCost()

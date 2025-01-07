@@ -10,6 +10,8 @@
 #include "GameData/ChapterData.h"
 #include "Manager/GameDataManager.h"
 #include "Manager/UIManager.h"
+#include "UserData/PlayDataSaveGame.h"
+#include "UserData/SaveGameSubsystem.h"
 
 void UChapterListItem::NativeConstruct()
 {
@@ -22,8 +24,7 @@ void UChapterListItem::SetItem(int chapterId)
 {
 	ChapterId = chapterId;
 	
-	//Test
-	TArray<int> unlockedChapterIds = {1};
+	UPlayDataSaveGame* playSaveData = USaveGameSubsystem::LoadSavedGameData<UPlayDataSaveGame>(this,TEXT("PlayData"),0);
 	
 	const FChapterData* chapterData = UGameDataManager::Get()->GetChapterData(chapterId);
 	if(chapterData!=nullptr)
@@ -33,7 +34,7 @@ void UChapterListItem::SetItem(int chapterId)
 		Text_ChapterName->SetText(FText::FromString(chapterName));
 	}
 
-	bool isUnlocked = unlockedChapterIds.Contains(chapterId);
+	bool isUnlocked = playSaveData->GetChapterStageClearData(chapterId) != nullptr;
 	Image_Lock->SetVisibility(isUnlocked ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
 }
 

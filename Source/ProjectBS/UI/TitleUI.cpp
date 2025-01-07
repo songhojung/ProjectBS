@@ -9,6 +9,8 @@
 #include "GameMode/BSGameInstance.h"
 #include "Manager/GameFieldManager.h"
 #include "Manager/UIManager.h"
+#include "UserData/PlayDataSaveGame.h"
+#include "UserData/SaveGameSubsystem.h"
 
 void UTitleUI::NativeConstruct()
 {
@@ -20,6 +22,7 @@ void UTitleUI::NativeConstruct()
 void UTitleUI::StartButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Start Button Clicked!"));
+
 
 	
 	// UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());

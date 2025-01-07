@@ -14,16 +14,25 @@
 #include "GameMode/BSGameInstance.h"
 #include "Manager/GameDataManager.h"
 #include "Manager/UIManager.h"
+#include "UserData/PlayDataSaveGame.h"
+#include "UserData/SaveGameSubsystem.h"
 
+
+class UPlayDataSaveGame;
 
 void UChapterWorldMapUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	CurrentSeletedNodeId = 1;
 	
 	Button_Play->OnClicked.AddDynamic(this, &UChapterWorldMapUI::OnClickButtonPlay);
 
+	UPlayDataSaveGame* playSaveData = USaveGameSubsystem::LoadSavedGameData<UPlayDataSaveGame>(this,TEXT("PlayData"),0);
+	CurrentSeletedNodeId = playSaveData->LastChapterId;
+
+	// USaveGameSubsystem::SaveSaveGameData(TEXT("PlayData"),Cast<UPlayDataSaveGame>(playSaveData));
+
+	
 	TArray<UWidget*> Widgets;
 	WidgetTree->GetAllWidgets(Widgets);
 
@@ -90,6 +99,8 @@ void UChapterWorldMapUI::CreateChapterListItems()
 
 void UChapterWorldMapUI::SetChapterInfoPanel(int chapterId)
 {
+	UPlayDataSaveGame* playSaveData = USaveGameSubsystem::LoadSavedGameData<UPlayDataSaveGame>(this,TEXT("PlayData"),0);
+	
 	const FChapterData* chapterData = UGameDataManager::Get()->GetChapterData(chapterId);
 	if(chapterData!=nullptr)
 	{
@@ -115,10 +126,7 @@ void UChapterWorldMapUI::SetChapterInfoPanel(int chapterId)
 	}
 
 
-	//Test
-	TArray<int> unlockedChapterIds = {1};
-
-	bool isLock = unlockedChapterIds.Contains(chapterId) == false;
+	bool isLock = playSaveData->GetChapterStageClearData(chapterId) == nullptr;
 	ChapterInfoLockMark->SetVisibility(isLock ?ESlateVisibility::Visible : ESlateVisibility::Collapsed );
 }
 

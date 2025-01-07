@@ -42,6 +42,9 @@ public:
 	ETeamType BattleWinTeam;
 
 	FBattleCostChanged OnBattleCostChanged;
+
+protected:
+	void InitializeChapterPlayData();
 	
 public:
 	FORCEINLINE void SetGameStartedFlag(uint8 _bGameStarted) { bGameStarted = _bGameStarted; }
