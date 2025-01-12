@@ -41,27 +41,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="LevelStage")
 	TArray<int32> EnemyTeamBatchPositions;
 
-	/** Please add a variable description */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="LevelStage")
-	bool EvnFlag;
 
-	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="LevelStage")
-	int32 EvnId;
+	FString StageTitleName;
 
-	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="LevelStage")
-	FString EvnName;
+	FString StageDescription;
 
-	/** Please add a variable description */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="LevelStage")
-	double EvnSize;
-
-	/** Please add a variable description */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="LevelStage")
-	double AddMoveSpeedValue;
-
-	/** Please add a variable description */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="LevelStage")
-	double AddAttackSpeedValue;
+	FString StageThumnail;
+ 
 };
