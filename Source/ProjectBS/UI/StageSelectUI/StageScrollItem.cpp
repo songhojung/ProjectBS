@@ -29,13 +29,13 @@ void UStageScrollItem::SetItem(int chapterId, const FLevelStageData* stageData)
 
 
 		int stageId =stageData->Id;
-		
+		FString thumnailName = stageData->StageThumnail;
 		//챕터 번호
 		FString chapterNumText = FString::Printf(TEXT("Stage.%d"),stageId);
 		Text_StageNum->SetText(FText::FromString(chapterNumText));
 
 		//챕터 썸네일
-		FString texturePath = FString::Printf(TEXT("/Game/UIResource/stageThumnail%d.stageThumnail%d"), stageId ,stageId);
+		FString texturePath = FString::Printf(TEXT("/Game/UIResource/%s.%s"),*thumnailName,*thumnailName );
 		UTexture2D* NewTexture = LoadObject<UTexture2D>(nullptr, *texturePath);
 		
 		if (NewTexture && Image_StageTumbnail)
