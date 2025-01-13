@@ -14,6 +14,7 @@
 #include "GameMode/BSGameInstance.h"
 #include "Manager/GameDataManager.h"
 #include "Manager/UIManager.h"
+#include "UI/StageSelectUI/StageSelectUI.h"
 #include "UserData/PlayDataSaveGame.h"
 #include "UserData/SaveGameSubsystem.h"
 
@@ -132,11 +133,34 @@ void UChapterWorldMapUI::SetChapterInfoPanel(int chapterId)
 
 void UChapterWorldMapUI::OnClickButtonPlay()
 {
-	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
-	if(gameIns)
-	{
-		gameIns->GameStart(gameIns->GetGameLevelId());
-	}
 
+
+	//StageSelectUI UI 노출
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+	UE_LOG(LogTemp, Log, TEXT("11 OnClickButtonPlay CurrentSeletedNodeId : %d "), CurrentSeletedNodeId);
+
+	if(playerController!=nullptr)
+	{
+		UUIManager::Get()->AddUI(TEXT("StageSelectUI"),playerController,FCompletedAddUIDelegate::CreateLambda([&](UUserWidget* widget)
+		{
+			UStageSelectUI* stageSelectUI = Cast<UStageSelectUI>(widget);
+			if(stageSelectUI!=nullptr)
+			{
+				UE_LOG(LogTemp, Log, TEXT("22 OnClickButtonPlay CurrentSeletedNodeId : %d "), CurrentSeletedNodeId);
+
+				stageSelectUI->SetUI(CurrentSeletedNodeId);
+			}
+		}));
+	}
+	
 	UUIManager::Get()->RemoveUI(this);
+
+	//
+	// UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	// if(gameIns)
+	// {
+	// 	gameIns->GameStart(gameIns->GetGameLevelId());
+	// }
+	//
+	// UUIManager::Get()->RemoveUI(this);
 }

@@ -44,6 +44,15 @@ void UBSGameInstance::OnPostLoadMap(UWorld* loadedWorld)
 
 void UBSGameInstance::InitializeChapterPlayData()
 {
+
+	// SaveGameSubsystem 가져오기
+	USaveGameSubsystem* SaveGameSubsystem = GetSubsystem<USaveGameSubsystem>();
+	if (!SaveGameSubsystem)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SaveGameSubsystem could not be initialized."));
+		return;
+	}
+	
 	//초기화시 캠페인 챕터 스테이지의 첫 챕터 플레이 정보 없으면 생성해서 save 한다.
 	UPlayDataSaveGame* playSaveData = USaveGameSubsystem::LoadSavedGameData<UPlayDataSaveGame>(this,TEXT("PlayData"),0);
 	FChapterStageClearData* chapterStatePlayData = playSaveData->GetChapterStageClearData(playSaveData->LastChapterId);
@@ -53,6 +62,8 @@ void UBSGameInstance::InitializeChapterPlayData()
 
 		USaveGameSubsystem::SaveSaveGameData(TEXT("PlayData"),playSaveData);
 	}
+
+	
 }
 
 int32 UBSGameInstance::GetMaxBattleCost()
