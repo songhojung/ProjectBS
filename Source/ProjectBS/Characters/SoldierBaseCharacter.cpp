@@ -101,8 +101,7 @@ void ASoldierBaseCharacter::SetTeam(ETeamType Team)
 		return;;
 
 	TeamComponent->SetTeamType(Team);
-	TeamComponent->SetTeamDynamicMaterialInstanceOverride(GetMesh(),Team);
-
+	// TeamComponent->SetTeamDynamicMaterialInstanceOverride(GetMesh(),Team);
 
 }
 

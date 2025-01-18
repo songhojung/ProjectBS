@@ -10,8 +10,10 @@
 // Sets default values
 AProjectileBase::AProjectileBase()
 {
+	USceneComponent* RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root")) ;
+	RootComponent = RootScene;
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = ProjectileMesh;
+	ProjectileMesh->SetupAttachment(RootComponent);
 	// static ConstructorHelpers::FObjectFinder<UStaticMesh> meshRef(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'"));
 	// if(meshRef.Object)
 	// {
