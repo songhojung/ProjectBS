@@ -3,6 +3,11 @@
 #include "Engine/DataTable.h"
 #include  "SoldierCharData.generated.h"
 
+enum CharType
+{
+	Char = 0,
+	Monster =1
+};
 USTRUCT(BlueprintType)
 struct FSoldierCharData : public FTableRowBase
 {
@@ -23,5 +28,9 @@ public:
 	FString UnitName;  
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Char")
-	FString ResourceName; 
+	FString ResourceName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Char")
+	int Type;
+	
 };

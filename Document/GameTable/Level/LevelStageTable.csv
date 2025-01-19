@@ -1,10 +1,10 @@
 ﻿Name,Id,StageName,OwnTeamMaxCost,OwnTeamBatchGridSize,EnemyTeamBatchGridSize,EnemyTeamCharNum,EnemyTeamBatchCharIds,EnemyTeamBatchPositions,StageTitleName,StageDescription,StageThumnail
-stage1,1,Basic_level11,1000,"(8,8)","(8,8)",2,"(1,2)","(5,14)",Entrance to the  Forest,The animal friends set out from the entrance of the small forest. Their first enemy is a hungry crow.,stageThumnail1
-stage2,2,Basic_level12,1000,"(8,8)","(8,8)",3,"(2,3,3)","(5,1,2)",Journey Through the Meadow,"Crossing the lush meadow, they must avoid the interference of wriggling earthworms. Keep the supplies safe!",stageThumnail2
-stage3,3,Basic_level13,1000,"(8,9)","(8,9)",4,"(2,3,4,1)","(5,1,3)",Adventure Across the River,"While crossing the bridge, beware of the fish swarm’s attacks. The waters are full of danger.",stageThumnail3
-stage4,4,Basic_level14,1000,"(8,10)","(8,10)",5,"(2,3,5,1,1)","(5,1,4)",Windy Hill,"On the windy hill, be on guard against sudden strikes from hawks. Teamwork is crucial here.",stageThumnail4
-stage5,5,Basic_level15,1000,"(8,11)","(8,11)",6,"(2,3,4,5,1,1)","(5,1,5)",Dark Forest Grove,"In the darkened woods, the threat of wolves begins. Move quietly and carefully.",stageThumnail5
-stage6,6,Basic_level16,1000,"(8,12)","(8,12)",7,"(2,3,4,5,6,1,1)","(5,1,6)",Tranquil Lake,"Around the serene lake, hidden crocodiles lurk. Protect the supplies and tread carefully.",stageThumnail6
-stage7,7,Basic_level17,1000,"(8,13)","(8,13)",8,"(2,3,4,5,6,7,1,1)","(5,1,7)",Trial of the Rocky Path,"On the uneven rocky path, fend off attacks from stag beetles. Stay calm and focused.",stageThumnail7
-stage8,8,Basic_level18,1000,"(8,14)","(8,14)",9,"(2,3,4,5,6,6,6,1,1)","(5,1,8)",Sunlit Plains,The beautiful plains are home to hidden snakes. Don’t let your guard down!,stageThumnail8
-stage9,9,Basic_level19,1000,"(8,15)","(8,15)",10,"(2,3,4,5,6,6,6,7,1,1)","(5,1,9)",Edge of the Waterfall,"Around the slippery and dangerous waterfall, a bear may appear. Stay alert!",stageThumnail9
+stage1,1,Basic_level11,1000,"(8,8)","(8,8)",2,"(1001,1002)","(5,14)",Entrance to the  Forest,The animal friends set out from the entrance of the small forest. Their first enemy is a hungry crow.,stageThumnail1
+stage2,2,Basic_level12,1000,"(8,8)","(8,8)",3,"(1002,1003,1003)","(5,1,2)",Journey Through the Meadow,"Crossing the lush meadow, they must avoid the interference of wriggling earthworms. Keep the supplies safe!",stageThumnail2
+stage3,3,Basic_level13,1000,"(8,9)","(8,9)",4,"(1002,1003,1004,1001)","(5,1,3)",Adventure Across the River,"While crossing the bridge, beware of the fish swarm’s attacks. The waters are full of danger.",stageThumnail3
+stage4,4,Basic_level14,1000,"(8,10)","(8,10)",5,"(1002,1003,1005,1001,1001)","(5,1,4)",Windy Hill,"On the windy hill, be on guard against sudden strikes from hawks. Teamwork is crucial here.",stageThumnail4
+stage5,5,Basic_level15,1000,"(8,11)","(8,11)",6,"(1002,1003,1005,1001,1001,1001)","(5,1,5)",Dark Forest Grove,"In the darkened woods, the threat of wolves begins. Move quietly and carefully.",stageThumnail5
+stage6,6,Basic_level16,1000,"(8,12)","(8,12)",7,"(1002,1003,1004,1005,1006,1001,1001)","(5,1,6)",Tranquil Lake,"Around the serene lake, hidden crocodiles lurk. Protect the supplies and tread carefully.",stageThumnail6
+stage7,7,Basic_level17,1000,"(8,13)","(8,13)",8,"(1002,1003,1004,1004,1005,1006,1001,1001)","(5,1,7)",Trial of the Rocky Path,"On the uneven rocky path, fend off attacks from stag beetles. Stay calm and focused.",stageThumnail7
+stage8,8,Basic_level18,1000,"(8,14)","(8,14)",9,"(1002,1003,1004,1005,1005,1006,1006,1001,1001)","(5,1,8)",Sunlit Plains,The beautiful plains are home to hidden snakes. Don’t let your guard down!,stageThumnail8
+stage9,9,Basic_level19,1000,"(8,15)","(8,15)",10,"(1002,1003,1004,1005,1005,1006,1006,1006,1001,1001)","(5,1,9)",Edge of the Waterfall,"Around the slippery and dangerous waterfall, a bear may appear. Stay alert!",stageThumnail9
