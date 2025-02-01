@@ -82,7 +82,7 @@ void UGameFieldManager::SetSpawnAreas()
 void UGameFieldManager::Tick(float DeltaTime)
 {
 	// TrackSampleSoldierMouseOnBatchGrid();
-	TrackSampleSoldierMouseOnGround();
+	// TrackSampleSoldierMouseOnGround();
 }
 
 bool UGameFieldManager::IsTickable() const

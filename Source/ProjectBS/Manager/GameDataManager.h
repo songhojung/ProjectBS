@@ -31,6 +31,7 @@ public:
 	const FSoldierStatData* GetSoldierStatData(int id) ;
 	
 	const FSoldierCharData* GetSoldierCharData(int id);
+	TArray<FSoldierCharData> GetAllOwnSoldierCharData();
 	
 	const FLevelStageData* GetLevelStageData(int id);
 	

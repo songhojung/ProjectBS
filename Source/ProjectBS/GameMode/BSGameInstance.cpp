@@ -12,8 +12,6 @@
 #include "UserData/PlayDataSaveGame.h"
 #include "UserData/SaveGameSubsystem.h"
 
-class UPlayDataSaveGame;
-class UBattleEndUI;
 
 UBSGameInstance::UBSGameInstance()
 {

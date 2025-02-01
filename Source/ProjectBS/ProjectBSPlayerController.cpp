@@ -161,7 +161,7 @@ void AProjectBSPlayerController::OnSetDestinationReleased()
 			// 	UGameFieldManager::Get(this)->BatchSoldier(FVector(outGridCenterLocation.X,outGridCenterLocation.Y,0.f), ETeamType::OwnTeam);
 
 			// if(UGameFieldManager::Get(this)->IsContainGridIndex(gridIndex)==false)
-				UGameFieldManager::Get(this)->BatchSoldier(FVector(Hit.Location.X,Hit.Location.Y,0.f), ETeamType::OwnTeam);
+				// UGameFieldManager::Get(this)->BatchSoldier(FVector(Hit.Location.X,Hit.Location.Y,0.f), ETeamType::OwnTeam);
 
 		// }
 	}

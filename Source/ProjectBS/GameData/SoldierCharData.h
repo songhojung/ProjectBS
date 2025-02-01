@@ -3,7 +3,7 @@
 #include "Engine/DataTable.h"
 #include  "SoldierCharData.generated.h"
 
-enum CharType
+enum ECharType
 {
 	Char = 0,
 	Monster =1

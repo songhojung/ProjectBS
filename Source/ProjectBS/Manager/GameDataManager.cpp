@@ -19,22 +19,7 @@ UGameDataManager* UGameDataManager::Get()
 
 UGameDataManager::UGameDataManager()
 {
-	// static ConstructorHelpers::FObjectFinder<UDataTable> SoldierStatTableRef(TEXT("/Script/Engine.DataTable'/Game/GameData/SoldierStatTable.SoldierStatTable'"));
- //     	if(SoldierStatTableRef.Object)
- //     	{
- //     		const UDataTable* dataTble = SoldierStatTableRef.Object;
- //     		check(dataTble->GetRowMap().Num() > 0);
- //     
- //     		TArray<uint8*>valueArray;
- //     		dataTble->GetRowMap().GenerateValueArray(valueArray);
- //     
- //     		Algo::Transform(valueArray,SoldierStatTables,
- //     			[](uint8* value)
- //     		{
- //     			return *reinterpret_cast<FSoldierStatData*>(value);
- //     		});
- //     
- //     	}
+
 
 	LoadDataTable(TEXT("SoldierStatTable"),SoldierStatTables);
 	LoadDataTable(TEXT("SoldierCharTable"),SoldierCharTables);
@@ -85,6 +70,16 @@ const FSoldierCharData* UGameDataManager::GetSoldierCharData(int id)
 	});
 
 	return findData;
+}
+
+TArray<FSoldierCharData> UGameDataManager::GetAllOwnSoldierCharData()
+{
+	TArray<FSoldierCharData> resultArr = SoldierCharTables.FilterByPredicate([](const FSoldierCharData& data)
+	{
+		return data.Type == (int)ECharType::Char;
+	});
+
+	return resultArr;
 }
 
 const FLevelStageData* UGameDataManager::GetLevelStageData(int id)

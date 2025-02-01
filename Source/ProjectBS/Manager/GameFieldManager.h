@@ -45,7 +45,7 @@ protected:
 	TWeakObjectPtr<class APlayerController> PlayerController;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Batch Grid")
-	TObjectPtr<class ABatchGridActor> BatchGrid;
+	TObjectPtr<class ABatchGridActor> BatchGrid; // 배치그리드 사용안함.
 
 	class ASoldierBaseCharacter* BatchGridSampleSoldier;
 
@@ -82,7 +82,12 @@ public:
 
 	void ClearFieldComponents();
 
-	FORCEINLINE void SetTargetBatchSoliderCharId(int32 charId){TargetBatchSoliderCharId = charId;}
+	FORCEINLINE void SetTargetBatchSoliderCharId(int32 charId)
+	{
+		TargetBatchSoliderCharId = charId;
+		UE_LOG(LogTemp, Warning, TEXT("SetTargetBatchSoliderCharId: %d"),charId);
+
+	}
 
 	FORCEINLINE int32 GetTargetBatchSoliderCharId(){return TargetBatchSoliderCharId;}
 	

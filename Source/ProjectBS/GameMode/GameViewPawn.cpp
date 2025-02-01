@@ -67,8 +67,8 @@ void AGameViewPawn::CameraZoom(const FInputActionValue& Value)
 
 	if(CamSpringArm->TargetArmLength > 2000.f)
 		CamSpringArm->TargetArmLength = 2000.f;
-	else if(CamSpringArm->TargetArmLength < 700.f)
-		CamSpringArm->TargetArmLength = 700.f;
+	else if(CamSpringArm->TargetArmLength < -1000.f)
+		CamSpringArm->TargetArmLength = -1000.f;
 }
 
 
