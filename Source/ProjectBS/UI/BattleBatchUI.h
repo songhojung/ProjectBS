@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "GameData/SoldierCharData.h"
 #include "BattleBatchUI.generated.h"
 
 /**
@@ -16,27 +17,31 @@ class PROJECTBS_API UBattleBatchUI : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	
 		
 protected:
 	int32 ForceCount = 1; //병력 숫자
 
 protected:
-	UPROPERTY(meta = (BindWidget))
-	class UPanelWidget* SoldierUnitGridPanel;	
-	
+	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
+	class UScrollBox* BattleCardScrollBox;
+	//
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Button_Start;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Text_NextEnemies;
-
+	class UButton* Button_Back;
+	
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Text_BattleCost;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Battle")
+	TSubclassOf<class UBattleCardItem> CardScrollItemClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Slot")
-	TSubclassOf<class UBatchUnitItemSlot> SoldierUnitGridSlotWidgetClass;
-
+protected:
+	void AddScrollItemToScrollBox( FSoldierCharData* charData);
+	
 public:
 	UFUNCTION()
 	void StartButtonClicked();
@@ -47,4 +52,7 @@ public:
 	void BatchUnitItemClicked(int32 id);
 
 	void BattleCostChanged(int32 currentCost, int32 maxCost);
+	
+	UFUNCTION()
+	void OnClickButtonBack();
 };
