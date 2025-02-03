@@ -34,6 +34,9 @@ public:
 	void  ButtonNextLevelClicked();
 
 	UFUNCTION()
+	void  ButtonRetryClicked();
+
+	UFUNCTION()
 	void  ButtonGotoMenuClicked();
 protected:
 	void Empty();
@@ -41,13 +44,16 @@ protected:
 	
 protected:
 	UPROPERTY(BlueprintReadWrite , meta = (BindWidget))
-	class UTextBlock* Text_Win;
+	class UCanvasPanel* WinPanel;
 
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
-	class UTextBlock* Text_Lose;
+	class UCanvasPanel* LosePanel;
 	
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
 	class UButton* Button_NextLevel;
+
+	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
+	class UButton* Button_Retry;
 
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
 	class UButton* Button_GoToMenu;

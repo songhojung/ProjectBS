@@ -5,6 +5,7 @@
 
 #include "ProjectBSGameMode.h"
 #include "Components/Button.h"
+#include "Components/CanvasPanel.h"
 #include "Components/TextBlock.h"
 #include "GameMode/BSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -16,6 +17,7 @@ void UBattleEndUI::NativeConstruct()
 
 
 	Button_NextLevel->OnClicked.AddDynamic(this, &UBattleEndUI::ButtonNextLevelClicked);
+	Button_Retry->OnClicked.AddDynamic(this, &UBattleEndUI::ButtonNextLevelClicked);
 	Button_GoToMenu->OnClicked.AddDynamic(this, &UBattleEndUI::ButtonGotoMenuClicked);
 }
 
@@ -24,14 +26,16 @@ void UBattleEndUI::SetUI(ETeamType teamType)
 	Empty();
 	if(teamType ==	ETeamType::OwnTeam)
 	{
-		Text_Win->SetVisibility(ESlateVisibility::Visible);
+		WinPanel->SetVisibility(ESlateVisibility::Visible);
 		Button_NextLevel->SetVisibility(ESlateVisibility::Visible);
+		Button_Retry->SetVisibility(ESlateVisibility::Visible);
 		Button_GoToMenu->SetVisibility(ESlateVisibility::Visible);
 		PlaySoundEffect(true);
 	}
 	else
 	{
-		Text_Lose->SetVisibility(ESlateVisibility::Visible);
+		LosePanel->SetVisibility(ESlateVisibility::Visible);
+		Button_Retry->SetVisibility(ESlateVisibility::Visible);
 		Button_GoToMenu->SetVisibility(ESlateVisibility::Visible);
 		PlaySoundEffect(false);
 
@@ -59,6 +63,25 @@ void UBattleEndUI::ButtonNextLevelClicked()
 	
 }
 
+void UBattleEndUI::ButtonRetryClicked()
+{
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
+	if(gameIns)
+	{
+		int levelId = gameIns->GetGameLevelId();
+		
+		if(gameIns->CheckGameLevelId(levelId))
+		{
+			gameIns->SetGameLevelId(levelId);
+			gameIns->GameStart(levelId);
+
+			UUIManager::Get()->RemoveUI(this);
+
+		}
+
+	}
+}
+
 void UBattleEndUI::ButtonGotoMenuClicked()
 {
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
@@ -71,8 +94,9 @@ void UBattleEndUI::ButtonGotoMenuClicked()
 
 void UBattleEndUI::Empty()
 {
-	Text_Win->SetVisibility(ESlateVisibility::Collapsed);
-	Text_Lose->SetVisibility(ESlateVisibility::Collapsed);
+	WinPanel->SetVisibility(ESlateVisibility::Collapsed);
+	LosePanel->SetVisibility(ESlateVisibility::Collapsed);
+	Button_Retry->SetVisibility(ESlateVisibility::Collapsed);
 	Button_NextLevel->SetVisibility(ESlateVisibility::Collapsed);
 	Button_GoToMenu->SetVisibility(ESlateVisibility::Collapsed);
 }
