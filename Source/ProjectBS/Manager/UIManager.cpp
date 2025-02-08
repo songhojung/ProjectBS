@@ -3,7 +3,6 @@
 
 #include "Manager/UIManager.h"
 
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Blueprint/UserWidget.h"
 
 // Static variable initialization
