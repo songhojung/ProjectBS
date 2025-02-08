@@ -27,12 +27,16 @@ protected:
 	UPROPERTY(visibleAnywhere)
 	TMap<ETeamType,int32> UnitsByTeamMap;
 	uint8 bNeedLevelLoadedProcess : 1;
+	uint8 bisLoadStartingGameLevel :1;
+	uint8 bisLoadGameLevel:1;
 
 	
 public:
 	uint8 bGameStarted : 1;
+
+	int32 GameChapterId;
 	
-	int32 GameLevelId;
+	int32 GameStageId;
 
 	int32 UsedBattleCost;
 	
@@ -51,7 +55,8 @@ public:
 	FORCEINLINE bool IsGameStarted() const { return bGameStarted; }
 	FORCEINLINE bool IsBattleStarted() const { return bBattleStarted; }
 	
-	FORCEINLINE int32 GetGameLevelId() {return GameLevelId;}
+	FORCEINLINE int32 GetGameStageId() {return GameStageId;}
+	FORCEINLINE int32 GetGameChapterId() {return GameChapterId;}
 	
 	FORCEINLINE int32 GetUsedBattleCost() {return UsedBattleCost;}
 	FORCEINLINE void AddBattleCost(int32 addValue) {UsedBattleCost += addValue; OnBattleCostChanged.Broadcast(UsedBattleCost , GetMaxBattleCost());}
@@ -61,11 +66,10 @@ public:
 	bool IsEnoughBattleCost( int charId);
 	
 public:
-	void SetGameLevelId(int32 newGameLevelId) {GameLevelId = newGameLevelId;} 
 	
-	bool CheckGameLevelId(int32 gameLevelId);
+	bool CheckGameStageId(int32 gameStageId);
 	
-	void GameStart(int32 gameLevelId);
+	void GameStart(int32 chapterId, int32 stageId);
 
 	void PostGameLevelLoaded();
 	

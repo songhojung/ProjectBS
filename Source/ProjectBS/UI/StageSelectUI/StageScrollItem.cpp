@@ -29,6 +29,9 @@ void UStageScrollItem::SetItem(int chapterId, const FLevelStageData* stageData)
 
 
 		int stageId =stageData->Id;
+		StageId = stageId;
+		ChapterId = chapterId;
+		
 		FString thumnailName = stageData->StageThumnail;
 		//챕터 번호
 		FString chapterNumText = FString::Printf(TEXT("Stage.%d"),stageId);
@@ -67,7 +70,7 @@ void UStageScrollItem::OnClickButtonPlay()
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
 	if(gameIns)
 	{
-		gameIns->GameStart(gameIns->GetGameLevelId());
+		gameIns->GameStart(ChapterId,StageId);
 	}
 	
 	UUIManager::Get()->RemoveUI(this);

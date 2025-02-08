@@ -17,6 +17,10 @@ class PROJECTBS_API UStageScrollItem : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
+
+protected:
+	int ChapterId;
+	int StageId;
 	
 public:
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
@@ -33,6 +37,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite,meta = (BindWidget))
 	class UButton* Button_Play;
+	
 	
 public:
 	void SetItem(int chapterId, const FLevelStageData* stageData);

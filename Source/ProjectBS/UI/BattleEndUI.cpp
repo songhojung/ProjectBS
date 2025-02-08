@@ -47,13 +47,13 @@ void UBattleEndUI::ButtonNextLevelClicked()
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
 	if(gameIns)
 	{
-		int levelId = gameIns->GetGameLevelId();
-		int nextLeveId = levelId + 1;
+		int curChapterId=gameIns->GetGameChapterId(); 
+		int curStageId = gameIns->GetGameStageId();
+		int nextStageId = curStageId + 1;
 		
-		if(gameIns->CheckGameLevelId(nextLeveId))
+		if(gameIns->CheckGameStageId(nextStageId))
 		{
-			gameIns->SetGameLevelId(nextLeveId);
-			gameIns->GameStart(nextLeveId);
+			gameIns->GameStart(curChapterId,nextStageId);
 
 			UUIManager::Get()->RemoveUI(this);
 
@@ -68,12 +68,12 @@ void UBattleEndUI::ButtonRetryClicked()
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
 	if(gameIns)
 	{
-		int levelId = gameIns->GetGameLevelId();
+		int curChapterId=gameIns->GetGameChapterId(); 
+		int curStageId = gameIns->GetGameStageId();
 		
-		if(gameIns->CheckGameLevelId(levelId))
+		if(gameIns->CheckGameStageId(curStageId))
 		{
-			gameIns->SetGameLevelId(levelId);
-			gameIns->GameStart(levelId);
+			gameIns->GameStart(curChapterId,curStageId);
 
 			UUIManager::Get()->RemoveUI(this);
 
@@ -84,11 +84,13 @@ void UBattleEndUI::ButtonRetryClicked()
 
 void UBattleEndUI::ButtonGotoMenuClicked()
 {
-	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
-	if(gameIns)
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+
+	if(playerController)
 	{
-		int levelId = gameIns->GetGameLevelId();
-		gameIns->GameStart(levelId);
+		UUIManager::Get()->RemoveUI(this);
+		
+		UUIManager::Get()->AddUI(TEXT("SelectGameModeUI"),playerController);
 	}
 }
 

@@ -22,15 +22,22 @@ UBSGameInstance::UBSGameInstance()
 	bBattleEnd = false;
 	
 	ClearBattleCost();
-	SetGameLevelId(1);
+	
 }
 
 void UBSGameInstance::Init()
 {
 	Super::Init();
-	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this,&UBSGameInstance::OnPostLoadMap);
 
+	bisLoadStartingGameLevel = true;
+	bNeedLevelLoadedProcess = true;
+	
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this,&UBSGameInstance::OnPostLoadMap);
+	
 	InitializeChapterPlayData();
+
+	// 최초 게임시작시 GameStartLevel 레벨로 로드
+	UGameplayStatics::OpenLevel(this, FName("GameStartLevel"));
 
 }
 
@@ -66,7 +73,7 @@ void UBSGameInstance::InitializeChapterPlayData()
 
 int32 UBSGameInstance::GetMaxBattleCost()
 {
-	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameLevelId);
+	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameStageId);
 	if(levelData != nullptr )
 		return  levelData->OwnTeamMaxCost;
 
@@ -75,7 +82,7 @@ int32 UBSGameInstance::GetMaxBattleCost()
 
 bool UBSGameInstance::IsEnoughBattleCost( int charId)
 {
-	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameLevelId);
+	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(GameStageId);
 
 	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(charId);
 	
@@ -92,21 +99,25 @@ bool UBSGameInstance::IsEnoughBattleCost( int charId)
 	return false;
 }
 
-bool UBSGameInstance::CheckGameLevelId(int32 gameLevelId)
+bool UBSGameInstance::CheckGameStageId(int32 gameStageId)
 {
-	const FLevelStageData* levelData =  UGameDataManager::Get()->GetLevelStageData(gameLevelId);
+	const FLevelStageData* levelData =  UGameDataManager::Get()->GetLevelStageData(gameStageId);
 	return levelData !=nullptr;
 }
 
 
-void UBSGameInstance::GameStart(int32 gameLevelId)
+void UBSGameInstance::GameStart(int32 chapterId, int32 stageId)
 {
 	//레벨에 맞는 레벨로드
 	bool isChangedGameLevel = false;
-	LoadLevel(gameLevelId , isChangedGameLevel);
+
+	GameChapterId = chapterId;
+	GameStageId = stageId;
+	
+	LoadLevel(stageId , isChangedGameLevel);
 
 	bNeedLevelLoadedProcess = true;
-	
+	bisLoadGameLevel = true;
 	// if(isChangedGameLevel == false)
 	// {
 	// 	UWorld* world = GetWorld();
@@ -127,28 +138,40 @@ void UBSGameInstance::PostGameLevelLoaded()
 
 	if(playerController)
 	{
-		// UUIManager::Get()->AddUI(TEXT("TitleUI"),playerController);
-		//배치 UI 노출
-		UUIManager::Get()->AddUI(TEXT("BattleBatchUI"),playerController);
+
+		// 최초 게임시작시 타이틀 UI 노출
+		if(bisLoadStartingGameLevel)
+		{
+			UUIManager::Get()->AddUI(TEXT("TitleUI"),playerController);
+		}
+		else if(bisLoadGameLevel)
+		{
+			//배치 UI 노출
+			UUIManager::Get()->AddUI(TEXT("BattleBatchUI"),playerController);
 
 
 		
-		//병력배치비용 다시 초기화
-		ClearBattleCost();
+			//병력배치비용 다시 초기화
+			ClearBattleCost();
 		
-		//이전 필드 요소들 클리어
-		UGameFieldManager::Get(this)->ClearFieldComponents();
+			//이전 필드 요소들 클리어
+			UGameFieldManager::Get(this)->ClearFieldComponents();
 		
-		UGameFieldManager::Get(this)->SetSpawnAreas();
+			UGameFieldManager::Get(this)->SetSpawnAreas();
 		
 		
-		//필드에 배치 grid actor 생성
-		UGameFieldManager::Get(this)->ReadyForBatch();
+			//필드에 배치 grid actor 생성
+			UGameFieldManager::Get(this)->ReadyForBatch();
+		}
 	}
 
 	bBattleStarted = false;
 
 	bNeedLevelLoadedProcess = false;
+
+	bisLoadGameLevel = false;
+
+	bisLoadStartingGameLevel = false;
 }
 
 void UBSGameInstance::BattleStart(int32 count)
@@ -160,7 +183,7 @@ void UBSGameInstance::BattleStart(int32 count)
 	
 	// 게임필드 에 필드에 병력, 오브젝트 등 로드.
 	UGameFieldManager* gfm = UGameFieldManager::Get(this);
-	gfm->StartBattleInField(GameLevelId);
+	gfm->StartBattleInField(GameStageId);
 
 	//배치 그리드 비활성
 	if(gfm->GetBatchGrid())
@@ -226,6 +249,11 @@ void UBSGameInstance::BattleEnd()
 
 	//승리팀 캐싱
 	BattleWinTeam = winTeam;
+
+	//클리어하였으니 현재 스테이지 로컬저장
+	UPlayDataSaveGame* playSaveData = USaveGameSubsystem::LoadSavedGameData<UPlayDataSaveGame>(this,TEXT("PlayData"),0);
+	playSaveData->SetChapterStageClearData(GameChapterId,GameStageId);
+	USaveGameSubsystem::SaveSaveGameData(TEXT("PlayData"),playSaveData);
 	
 	FString teamStr = StaticEnum<ETeamType>()->GetValueAsString(winTeam);
 	UE_LOG(LogTemp, Warning, TEXT("********************* BattleEnd winTeam is %s ***********************"),*teamStr );

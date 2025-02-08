@@ -14,6 +14,7 @@
 #include "BatchGrid/BatchGridActor.h"
 #include "Engine/LocalPlayer.h"
 #include "GameMode/BSGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 #include "Manager/GameFieldManager.h"
 #include "Manager/UIManager.h"
 
@@ -54,20 +55,22 @@ void AProjectBSPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetGameInstance());
-
+	
 	if(gameIns)
 	{
 		//레벨 로드시 로드 완료 콜백호출
-		gameIns->PostGameLevelLoaded();
+		// gameIns->PostGameLevelLoaded();
 		
-		if(gameIns->IsGameStarted() ==false)
-		{
-			//타이틀 UI 노출
-			UUIManager::Get()->AddUI(TEXT("TitleUI"),this);
-
-			//게임 시작 플레그 설정
-			gameIns->SetGameStartedFlag(true);
-		}
+		// if(gameIns->IsGameStarted() ==false)
+		// {
+		// 	//게임 시작 플레그 설정
+		// 	gameIns->SetGameStartedFlag(true);
+		// 	
+		// 	//타이틀 UI 노출
+		// 	UUIManager::Get()->AddUI(TEXT("TitleUI"),this);
+		//
+		//
+		// }
 	}
 }
 
