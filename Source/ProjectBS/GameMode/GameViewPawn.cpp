@@ -2,6 +2,8 @@
 
 
 #include "GameMode/GameViewPawn.h"
+
+#include "BSGameInstance.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
@@ -58,6 +60,14 @@ void AGameViewPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 
 void AGameViewPawn::CameraZoom(const FInputActionValue& Value)
 {
+	UBSGameInstance* gameIns = Cast<UBSGameInstance>(GetWorld()->GetGameInstance()) ;
+	if(gameIns != nullptr)
+	{
+		//배틀중 아닐때는 작동안함
+		if(gameIns->IsBattleStarted() == false)
+			return;
+	}
+	
 	float zoomValue =  Value.Get<float>();
 	
 	if(CamSpringArm != nullptr)
