@@ -9,6 +9,7 @@
 #include "Manager/GameFieldManager.h"
 #include "Manager/UIManager.h"
 #include "UI/BattleEndUI.h"
+#include "UI/ToastPopupUI.h"
 #include "UserData/PlayDataSaveGame.h"
 #include "UserData/SaveGameSubsystem.h"
 
@@ -132,9 +133,12 @@ void UBSGameInstance::PostGameLevelLoaded()
 	if(bNeedLevelLoadedProcess == false)
 		return;
 
+	UWorld* world = GetWorld();
 
+	if(world ==nullptr)
+		return;
 	
-	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+	APlayerController* playerController = world->GetFirstPlayerController();
 
 	if(playerController)
 	{
@@ -280,6 +284,12 @@ void UBSGameInstance::LoadLevel(int32 gameLevelId, bool& outChangedLevel)
 	const FLevelStageData* levelData = UGameDataManager::Get()->GetLevelStageData(gameLevelId);
 	if(levelData ==nullptr)
 		return;
+
+	// if (GEngine)
+	// {
+	// 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green,
+	// 		FString::Printf(TEXT("111 LoadLevel gameLevelId :  %d"), gameLevelId));
+	// }
 	
 	UWorld* world = GetWorld();
 	if (world)

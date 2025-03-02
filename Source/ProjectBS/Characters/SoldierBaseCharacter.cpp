@@ -234,6 +234,7 @@ void ASoldierBaseCharacter::AttackHitCheck()
 		outHitResult.GetActor()->TakeDamage(StatComponent->GetAttackDamange(), damageEvent,GetController(),this);
 	}
 
+#if WITH_EDITOR
 #if ENABLE_DRAW_DEBUG
 	// FVector capsuleOrigin = start + (end - start) * 0.5f;
 	FVector capsuleOrigin = ( start + end )/ 2;
@@ -248,6 +249,8 @@ void ASoldierBaseCharacter::AttackHitCheck()
 
 	DrawDebugLine(GetWorld(), start, end, FColor::Blue, false, 3.0f, 0, 2.0f);
 #endif
+#endif
+	
 }
 
 

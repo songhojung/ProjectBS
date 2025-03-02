@@ -271,6 +271,11 @@ void UGameFieldManager::ClearFieldComponents()
 ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector location, FRotator rotation, ETeamType teamType)
 {
 	UClass* soldierClass = LoadCharacterClass(charId);
+
+	if(soldierClass == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("soldierClass is Null => charId :  %d"), charId);
+	}
 	
 	//병사 오브젝트 로드해서 위치시킨다
 	const FSoldierCharData* charData = UGameDataManager::Get()->GetSoldierCharData(charId);
@@ -278,6 +283,11 @@ ASoldierBaseCharacter* UGameFieldManager::CreateSoldier(int32 charId, FVector lo
 	FVector spawnLocation = location;
 	FRotator spawnRotation = rotation;
 	ASoldierBaseCharacter* soldier = GetWorld()->SpawnActorDeferred<ASoldierBaseCharacter>(soldierClass, FTransform( spawnRotation, spawnLocation));
+	if(soldier == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("soldier is Null => charId :  %d"), charId);
+
+	}
 	soldier->SetTeam(teamType);
 	soldier->SetStat(*statData);
 	soldier->SetCollisionProfileName(teamType);
@@ -451,14 +461,28 @@ UClass* UGameFieldManager::LoadCharacterClass(int charTableId)
 	//Blueprint'/Game/ProjectBS/Blueprints/BP_SoldierBase.BP_SoldierBase'
 	///Script/Engine.Blueprint'/Game/ProjectBS/Blueprints/Soldiers/BP_Soldier_Jabjong1.BP_Soldier_Jabjong1'
 	const FSoldierCharData* charDataPtr = UGameDataManager::Get()->GetSoldierCharData(charTableId);
-	FString classRefPath = FString::Printf(TEXT("Blueprint'/Game/ProjectBS/Blueprints/Soldiers/%s.%s'"),*charDataPtr->ResourceName,*charDataPtr->ResourceName);
-	UObject* loadedObject = StaticLoadObject(UObject::StaticClass(),nullptr,*classRefPath);
-	UBlueprint* loadedBP = Cast<UBlueprint>(loadedObject);
+	// FString classRefPath = FString::Printf(TEXT("Blueprint'/Game/ProjectBS/Blueprints/Soldiers/%s.%s'"),*charDataPtr->ResourceName,*charDataPtr->ResourceName);
+	FString classRefPath = FString::Printf(TEXT("Class'/Game/ProjectBS/Blueprints/Soldiers/%s.%s_C'"),*charDataPtr->ResourceName,*charDataPtr->ResourceName);
 
+	UObject* loadedObject = StaticLoadObject(UObject::StaticClass(),nullptr,*classRefPath);
+	UClass* loadedBP = Cast<UClass>(loadedObject);
+	
 	if(loadedBP)
-		return loadedBP->GeneratedClass;
+		return loadedBP;
 	else
 		return nullptr;
+
+	// const FSoldierCharData* charDataPtr = UGameDataManager::Get()->GetSoldierCharData(charTableId);
+	// FString classRefPath = FString::Printf(TEXT("BlueprintGeneratedClass'/Game/ProjectBS/Blueprints/Soldiers/%s_C'"), *charDataPtr->ResourceName);
+	//
+	// UClass* loadedClass = LoadObject<UClass>(nullptr, *classRefPath);
+ //    
+	// if (!loadedClass)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Failed to load class: %s"), *classRefPath);
+	// }
+ //    
+	// return loadedClass;
 }
 
 UClass* UGameFieldManager::LoadBatchGridClass()

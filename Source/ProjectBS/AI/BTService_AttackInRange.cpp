@@ -28,8 +28,10 @@ void UBTService_AttackInRange::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		return;
 
 	float attackRange = aiCharacter->GetAIAttackRange();
-	DrawDebugSphere(ownerPawn->GetWorld(), ownerPawn->GetActorLocation(), attackRange /*/ 2*/, 16, FColor::Blue, false, 0.2f);
 	
+#if WITH_EDITOR
+	DrawDebugSphere(ownerPawn->GetWorld(), ownerPawn->GetActorLocation(), attackRange /*/ 2*/, 16, FColor::Blue, false, 0.2f);
+#endif
 	float distance =ownerPawn->GetDistanceTo(targetPawn);
 
 	//거리안이면 true반환
