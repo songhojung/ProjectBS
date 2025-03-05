@@ -8,3 +8,4 @@ Windows/*
 *.vsconfig
 *.sln
 *ProjectBS.uproject.DotSettings.user
+Content/StarterContent/Blueprints/Blueprint_CeilingLight.uasset
