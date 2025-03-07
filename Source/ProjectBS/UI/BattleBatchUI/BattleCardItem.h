@@ -31,6 +31,9 @@ protected:
 	class UTextBlock* Text_Cost;
 
 	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Text_Attack;
+
+	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Text_Hp;
 
 	// (Slot으로 설정해 드래그 시 Slot이 그대로 마우스를 따라다니게 할 것)

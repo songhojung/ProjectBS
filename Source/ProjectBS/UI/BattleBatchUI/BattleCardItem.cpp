@@ -48,6 +48,11 @@ void UBattleCardItem::SetItem(int charId)
 	FString costStr = FString::Printf(TEXT("%d"),charData->Cost);
 	Text_Cost->SetText(FText::FromString(costStr));
 
+	//캐릭터공격력
+	int32 atk = FMath::FloorToInt(charStatData->AttackDamage); // 소수점 아래를 버림
+	FString atkStr = FString::Printf(TEXT("%d"),atk);
+	Text_Attack->SetText(FText::FromString(atkStr));
+	
 	//캐릭터최대체력
 	int32 hpInt = FMath::FloorToInt(charStatData->MaxHp); // 소수점 아래를 버림
 	FString hpStr = FString::Printf(TEXT("%d"),hpInt);
